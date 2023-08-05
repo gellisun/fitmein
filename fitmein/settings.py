@@ -84,9 +84,9 @@ DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
     'NAME': 'fitmein',
-    'USER': 'gellisun',
+    'USER': 'james.carter2155',
     'PASSWORD': os.environ['DB_PASSWORD'],
-    'HOST': 'ep-wild-pond-39988083.eu-central-1.aws.neon.tech',
+    'HOST': 'ep-square-union-27902477.eu-central-1.aws.neon.tech',
     'PORT': '5432',
   }
 }
