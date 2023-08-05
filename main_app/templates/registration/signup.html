@@ -12,13 +12,14 @@
 </head>
 
 <body>
-    <h1>Log In</h1>
+    <h1>Sign Up</h1>
+    <p class="red-text">{{ error_message }}</p>
 
-    <form method="POST" action="{% url 'login' %}">
+    <form method="POST" action="{% url 'signup' %}">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="hidden" name="next" value="{{ next }}">
-        <button type="submit" class="btn">Log In</button>
+        <button type="submit" class="btn">Sign Up</button>
     </form>
 </body>
 

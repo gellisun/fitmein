@@ -130,6 +130,8 @@ STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL = '/profile/'
 
+LOGOUT_REDIRECT_URL = '/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

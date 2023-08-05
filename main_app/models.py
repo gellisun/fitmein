@@ -11,12 +11,12 @@ def get_profile_image_filepath(self, filename):
     return f'profile_images/{self.pk}/{"profile_image.png"}'
 
 class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=1, choices=GENDER)
     age = models.IntegerField(validators=[MinValueValidator(0)])
-    location = models.CharField()
+    location = models.CharField(max_length=50)
     is_couch_potato = models.BooleanField(default=True)
     favorites = models.CharField(max_length=2, choices=ACTIVITIES)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
