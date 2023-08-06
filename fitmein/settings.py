@@ -86,9 +86,9 @@ DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
     'NAME': 'fitmein',
-    'USER': 'hannah.l.curran',
+    'USER': os.environ['USER_NAME'],
     'PASSWORD': os.environ['DB_PASSWORD'],
-    'HOST': 'ep-winter-heart-91386223.eu-central-1.aws.neon.tech',
+    'HOST': os.environ['HOST'],
     'PORT': '5432',
   }
 }
@@ -131,6 +131,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL = '/profile/'
+
+LOGOUT_REDIRECT_URL = '/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
