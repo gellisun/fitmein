@@ -80,13 +80,15 @@ WSGI_APPLICATION = 'fitmein.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# To use Neon with Django, you have to create a Project on Neon and specify the project connection settings in your settings.py in the same way as for standalone Postgres.
+
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
     'NAME': 'fitmein',
-    'USER': 'gellisun',
+    'USER': 'hannah.l.curran',
     'PASSWORD': os.environ['DB_PASSWORD'],
-    'HOST': 'ep-wild-pond-39988083.eu-central-1.aws.neon.tech',
+    'HOST': 'ep-winter-heart-91386223.eu-central-1.aws.neon.tech',
     'PORT': '5432',
   }
 }
