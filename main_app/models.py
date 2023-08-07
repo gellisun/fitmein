@@ -17,7 +17,7 @@ class Profile(models.Model):
     location = models.CharField(max_length=50)
     is_couch_potato = models.BooleanField(default=True)
     favorites = models.CharField(max_length=2, choices=ACTIVITIES)
-
+    
     def __str__(self):
         return self.name
 
@@ -32,3 +32,9 @@ class Badges(models.Model):
 
 def get_profile_image_filename(self):
     return str(self.profile_image)[str(self.profile_image).index(f'profile_images/{self.pk}/'):]
+
+class Matcher(models.Model):
+    user = models.ManyToManyField(Profile)
+    chosen_activities = models.CharField(max_length=2, choices=ACTIVITIES)
+    
+    
