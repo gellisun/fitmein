@@ -13,7 +13,7 @@ def get_profile_image_filepath(self, filename):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=1, choices=GENDER)
-    age = models.IntegerField(validators=[MinValueValidator(0)])
+    age = models.IntegerField(validators=[MinValueValidator(0)], default=0)  
     location = models.CharField(max_length=50)
     is_couch_potato = models.BooleanField(default=True)
     favorites = models.CharField(max_length=2, choices=ACTIVITIES)
