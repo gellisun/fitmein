@@ -19,11 +19,24 @@
   <form action="{% url 'profile' %}" method="POST">
     {% csrf_token %}
     <table>
-      {{ profile_form.as_table }}
+      {{ profile_form.as_p }}
     </table>
     <input type="submit" value="Submit!">
   </form>
 </div>
 {% endif %}
-      
+
+<a href="{% url 'create_comment' %}">Click here to leave a comment for {{ user.username }}</a>
+
+{% for comment in comments %}
+    <div>
+        <p>{{ comment.content }}</p>
+        <a href="{% url 'edit_comment' comment.id %}">Edit</a>
+        <a href="{% url 'delete_comment' comment.id %}">Delete</a>
+    </div>
+{% endfor %}
+
+
+
+
 {% endblock %}
