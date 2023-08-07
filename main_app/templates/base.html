@@ -34,17 +34,24 @@
         style="background: #a478f5"
       >
         <div class="container">
-          <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center navigation" type="button">
+          <a href="{% url 'profile' %}">
+              <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center flex-nowrap" type="button">
+                PROFILE
+                </button>
+              </a>
+              <a href="{% url 'match' %}">
+              <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center navigation" type="button">
+                MATCH-ME
+                </button>
+              </a>
+              <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center" type="button">
                 Button
             </button>
-            <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center navigation" type="button">
-                Button
+            <a href="{% url 'logout' %}">
+            <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center" type="button">
+                LOGOUT
             </button>
-            <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center navigation" type="button">
-            </button>
-            <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center navigation" type="button">
-                Button
-            </button>
+            </a>
         </div>
       </nav>
     </footer>

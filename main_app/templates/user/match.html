@@ -1,11 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Click the Match button</h1>
+<h1>Set your preferences</h1>
+
 <ul>
-    <li><a href="{% url 'about' %}">About</a></li>
-    <li><a href="{% url 'logout' %}">Log Out</a></li>
     <div>
-        <h3>Update your personal info!</h3>
+        <h3>CHeck your location</h3>
+        <p>Data Query: {{data.query}}</p>
+        <ul>
+            <li>Country: {{ data.country}}</li>
+            <li>Country Code: {{ data.countryCode }}</li>
+            <li>Time Zone: {{ data.timezone }}</li>
+            <li>City: {{ data.city }}</li>
+            <li>Zip Code: {{ data.zip }}</li>
+            <li>Latitude: {{ data.lat }}</li>
+            <li>Longitude: {{ data.lon }}</li>
+            <li>IP: {{ ip }}</li>
+        </ul>
+        <p>{{data}}</p>
     </div>
 </ul>
 
