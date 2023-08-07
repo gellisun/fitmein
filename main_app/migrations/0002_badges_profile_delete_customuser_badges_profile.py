@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('gender', models.CharField(choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')], max_length=1)),
                 ('age', models.IntegerField()),
                 ('location', models.CharField()),
-                ('is_couch_potato', models.BooleanField(default=True)),
+                ('ready_to_be_active', models.BooleanField(default=True)),
                 ('favorites', models.CharField(choices=[('RU', 'Running'), ('WL', 'Weight Lifting'), ('GC', 'Group Classes'), ('BR', 'Bike Riding'), ('TE', 'Tennis'), ('SQ', 'Squash'), ('WA', 'Walking'), ('BA', 'Badminton'), ('SW', 'Swimming'), ('WA', 'Walking'), ('HI', 'Hiking'), ('P', 'Pilates'), ('SU', 'Surfing'), ('SK', 'Skateboarding')], max_length=2)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],

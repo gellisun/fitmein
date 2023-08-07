@@ -19,13 +19,26 @@ def about(request):
 
 @login_required
 def profile(request):
-  profile, created = Profile.objects.get_or_create(user=request.user)
+  try:
+    profile = Profile.objects.get(user=request.user)
+    profile_exists = True
+  except Profile.DoesNotExist:
+    profile = None
+    profile_exists = False
+
   if request.method == 'POST':
     profile_form = ProfileForm(request.POST, instance=profile)
     if profile_form.is_valid():
-      profile_form.save()
+        profile_form.save()
+    else:
+        new_profile = profile_form.save(commit=False)
+        new_profile.user = request.user
+        new_profile.save()
   else:
-    profile_form = ProfileForm(instance=profile)
+    if profile_exists:
+      profile_form = ProfileForm(instance=profile)
+    else:
+      profile_form = ProfileForm()
 
   context = {'profile': profile, 'profile_form': profile_form,}
   return render(request, 'user/profile.html', context)

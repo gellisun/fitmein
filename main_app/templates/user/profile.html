@@ -1,24 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{% if user %}
+
 <h1>{{ user.username }}'s Profile Page</h1>
 <ul>
   <li><a href="{% url 'about' %}">About</a></li>
   <li><a href="{% url 'logout' %}">Log Out</a></li>
 </ul>
-  <div>
-
-         <form action="{% url 'profile' %}" method="POST">
-      {% csrf_token %}
-      <table>
-       {{ profile_form.as_table }}
-      </table>
-      <input type="submit" value="Submit!">
-    </form>
-
-  </div>
-
+{% if not profile %}
+<div>
+  <ul>
+  <li>Location: {{ profile.location }}</li>
+  <li>Age: {{ profile.age }}</li>
+  <li> Top Activities: {{ profile.get_favorites_display }}</li>
+  <li> Active Today: {{ profile.is_couch_potato }}</li>
+  </ul>
+</div>
+{% else %}
+<div>
+  <form action="{% url 'profile' %}" method="POST">
+    {% csrf_token %}
+    <table>
+      {{ profile_form.as_table }}
+    </table>
+    <input type="submit" value="Submit!">
+  </form>
+</div>
 {% endif %}
+
 
 {% endblock %}
