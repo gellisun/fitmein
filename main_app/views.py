@@ -3,12 +3,16 @@ from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
 import requests
 import json
+import uuid
+import os
+import boto3
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
+from django.utils import timezone
+from django.http import HttpResponse
 
-from .models import Matcher
-from .models import Profile, Badges, User, Comment
+from .models import Profile, Badges, User, Comment, Matcher
 
 from .forms import ProfileForm, CommentForm
 
@@ -30,6 +34,30 @@ def home(request):
 def about(request):
   return render(request, 'about.html')
 
+@login_required
+def profile(request):
+    try:
+        profile = Profile.objects.get(user=request.user)
+        profile_exists = True
+    except Profile.DoesNotExist:
+        profile = None
+        profile_exists = False
+    comments = None  
+    if request.method == 'POST':
+        profile_form = ProfileForm(request.POST, instance=profile)
+        if profile_form.is_valid():
+            profile_form.instance.user = request.user
+            profile_form.save()
+            return redirect('profile')
+    else:
+        if profile_exists:
+            profile_form = ProfileForm(instance=profile)
+            comments = Comment.objects.filter(user=request.user) 
+        else:
+            profile_form = ProfileForm(instance=Profile(user=request.user))  
+
+    context = {'profile': profile, 'profile_form': profile_form, 'comments': comments}
+    return render(request, 'user/profile.html', context)
 
 # ---------------- 2-step Sign-Up ------------------------
 
@@ -40,12 +68,25 @@ def signup(request):
     if form.is_valid():
       user = form.save()
       login(request, user)
-      return redirect('profile')
+      return redirect('create_profile')
     else:
       error_message = 'Invalid sign up - try again!'
   form = UserCreationForm()
   context = {'form': form, 'error_message': error_message}
   return render(request, 'registration/signup.html', context)
+
+#--------lucas---------
+class ProfileCreate(CreateView):
+  model = Profile
+  template_name = 'user/create_profile.html'
+  fields = ['age', 'gender', 'location']
+
+  def form_valid(self, form):
+      form.instance.user = self.request.user
+      print('form validation running')
+      return super().form_valid(form)
+#------ lucas end ------
+
 
 
 # -------------------- User Area -------------------------------
@@ -57,69 +98,43 @@ def match(request):
   ip_data = json.loads(ip.text)
   res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
   location_data_one = res.text #convert JSON to python dictionary
-  location_data = json.loads(location_data_one) #loading location data one~
+  location_data = json.loads(location_data_one) #loading location data one
   if request.method == 'POST':
     latitude = request.POST.get('latitude')
     longitude = request.POST.get('longitude')
-
     profile = Profile.objects.get(user=request.user)
     profile.latitude = latitude
     profile.longitude = longitude
     profile.save()
     return HttpResponse(status=200)
-
   profile = Profile.objects.get(user=request.user)
-  return render(request, 'user/match.html', {
-    'data': location_data, 
-    'ip': ip_data,
-    'profile': profile
-  })
+  context = {'data': location_data, 'ip': ip_data, 'profile': profile }
+  return render(request, 'user/match.html', context)
+  
+  
 
-@login_required
-def profile(request):
+# @csrf_exempt
+# @require_POST
+# def update_profile(request, profile_id):
+#     field_id = request.POST.get('field_id')
+#     new_value = request.POST.get('new_value')
 
- try:
-    profile = Profile.objects.get(user=request.user)
-    profile_exists = True
- except Profile.DoesNotExist:
-    profile = None
-    profile_exists = False
+#     # Get the Profile instance based on the profile_id
+#     try:
+#         profile = Profile.objects.get(id=profile_id)
+#     except Profile.DoesNotExist:
+#         return JsonResponse({'error': 'Profile not found'}, status=404)
 
- if request.method == 'POST':
-        profile_form = ProfileForm(request.POST, instance=profile)
-        if profile_form.is_valid():
-            profile_form.instance.user = request.user 
-            profile_form.save()
-            return redirect('profile') 
+#     if field_id == 'location':
+#         profile.location = new_value
+#     elif field_id == 'favorites':
+#         profile.favorites = new_value
+#     else:
+#         return JsonResponse({'error': 'Invalid field ID'}, status=400)
 
- else:
-        profile_form = ProfileForm(instance=profile)
+#     profile.save()
 
- context = {'profile': profile, 'profile_form': profile_form,}
- return render(request, 'user/profile.html', context)
-
-@csrf_exempt
-@require_POST
-def update_profile(request, profile_id):
-    field_id = request.POST.get('field_id')
-    new_value = request.POST.get('new_value')
-
-    # Get the Profile instance based on the profile_id
-    try:
-        profile = Profile.objects.get(id=profile_id)
-    except Profile.DoesNotExist:
-        return JsonResponse({'error': 'Profile not found'}, status=404)
-
-    if field_id == 'location':
-        profile.location = new_value
-    elif field_id == 'favorites':
-        profile.favorites = new_value
-    else:
-        return JsonResponse({'error': 'Invalid field ID'}, status=400)
-
-    profile.save()
-
-    return JsonResponse({'message': 'Profile updated successfully'}, status=200)
+#     return JsonResponse({'message': 'Profile updated successfully'}, status=200)
 
 
 class CommentListView(LoginRequiredMixin, ListView):
@@ -165,3 +180,24 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
+    
+
+# @login_required
+# def add_photo(request, user_id):
+#   # photo-file maps to the "name" attr on the <input>
+#   photo_file = request.FILES.get('photo-file', None)
+#   if photo_file:
+#     s3 = boto3.client('s3')
+#     # Need a unique "key" (filename)
+#     # It needs to keep the same file extension
+#     # of the file that was uploaded (.png, .jpeg, etc.)
+#     key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+#     try:
+#       bucket = os.environ['S3_BUCKET']
+#       s3.upload_fileobj(photo_file, bucket, key)
+#       url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+#       Photo.objects.create(url=url, user_id=user_id)
+#     except Exception as e:
+#       print('An error occurred uploading file to S3')
+#       print(e)
+#   return redirect('detail', user_id=user_id)

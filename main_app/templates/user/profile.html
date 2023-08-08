@@ -1,5 +1,7 @@
 {% extends 'base.html' %} {% block content %}
-{% load static %}
+<!-- {% load static %} -->
+
+
 <h1>{{ user.username }}'s Profile Page</h1>
 <ul>
   <li><a href="{% url 'about' %}">About</a></li>
@@ -23,6 +25,7 @@
   </form>
 </div>
 {% else %}
+
 <div>
   <ul>
     <li>
@@ -34,7 +37,14 @@
   </ul>
   <a href="">Delete Bio</a>
 </div>
-{% endif %}
+
+<div>
+  <form id="locationForm" method="post" action="{% url 'profile' %}">
+    {% csrf_token %}
+    <input type="hidden" name="latitude" id="latitudeInput">
+    <input type="hidden" name="longitude" id="longitudeInput">
+  </form>
+</div>
 
 <a href="{% url 'create_comment' %}">Click here to leave a comment for {{ user.username }}</a>
 
@@ -45,9 +55,12 @@
         <a href="{% url 'delete_comment' comment.id %}">Delete</a>
     </div>
 {% endfor %}
+{% endif %}
 
 
 
-<script src="{% static 'user/profile_edit.js' %}"></script>
+
+
+<!-- <script src="{% static 'user/profile_edit.js' %}"></script> -->
 
 {% endblock %}
