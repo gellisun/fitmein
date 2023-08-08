@@ -1,6 +1,6 @@
+from django import forms
 from django.forms import ModelForm
 from .models import Profile, Comment
-from django import forms
 
 class ProfileForm(ModelForm):
     class Meta:

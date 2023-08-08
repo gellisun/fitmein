@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <h1>Set your preferences</h1>
 
 <ul>
@@ -17,6 +18,17 @@
             <li>IP: {{ ip }}</li>
         </ul>
         <p>{{data}}</p>
+        <h2>Using HTML API</h2>
+        <p>Click on button</p> 
+        <button onclick="getLocation()">Location:</button>
+            {% csrf_token %}
+            <p>Latitude: <span id="latitude">{{ profile.latitude }}</span></p>
+            <p>Longitude: <span id="longitude">{{ profile.longitude }}</span></p>
+            <form id="locationForm" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="latitude" id="latitudeInput" value="{{ profile.latitude }}">
+                <input type="hidden" name="longitude" id="longitudeInput" value="{{ profile.longitude }}">
+            </form>
     </div>
 </ul>
 
