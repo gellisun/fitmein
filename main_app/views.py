@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.utils import timezone
+from django.http import HttpResponse, JsonResponse
 import requests
 import json
 import uuid
@@ -11,16 +13,20 @@ from django.utils import timezone
 from django.http import HttpResponse
 
 from .models import Profile, Badges, User, Comment, Matcher
+
 from .forms import ProfileForm, CommentForm
+
 
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required #  Login required for View Functions
 from django.contrib.auth.mixins import LoginRequiredMixin #  Login required for Class-based Views
 
-from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+
+# ---------------- Home ----------------------------
+
 
 def home(request):
   return render(request, 'home.html')
@@ -53,6 +59,8 @@ def profile(request):
     context = {'profile': profile, 'profile_form': profile_form, 'comments': comments}
     return render(request, 'user/profile.html', context)
 
+# ---------------- 2-step Sign-Up ------------------------
+
 def signup(request):
   error_message = ''
   if request.method == 'POST':
@@ -79,38 +87,13 @@ class ProfileCreate(CreateView):
       return super().form_valid(form)
 #------ lucas end ------
 
-# @login_required
-# def profile(request):
-
-#  try:
-#     profile = Profile.objects.get(user=request.user)
-#     profile_exists = True
-#  except Profile.DoesNotExist:
-#     profile = None
-#     profile_exists = False
-
-#  if request.method == 'POST':
-#         print('checkpoint 1')
-#         profile_form = ProfileForm(request.POST, instance=profile)
-#         if profile_form.is_valid():
-#             profile_form.instance.user = request.user 
-#             profile_form.save()
-#             return redirect('profile') 
-
-#  else:
-#     profile_form = ProfileForm(instance=profile)
-#     print('checkpoint')
-#     print('Filter:', profile.user)
-#     if profile_exists:
-#       profile_form = ProfileForm(instance=profile)
-#       comments = Comment.objects.filter(user=profile.user)
-#     else:
-#       profile_form = ProfileForm()
-#  context = {'profile': profile, 'profile_form': profile_form, 'comments': comments}
-#  return render(request, 'user/profile.html', context)
 
 
+# -------------------- User Area -------------------------------
+
+@login_required
 def match(request):
+  print(request.user.id)
   ip = requests.get('https://api.ipify.org?format=json')
   ip_data = json.loads(ip.text)
   res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
@@ -119,16 +102,16 @@ def match(request):
   if request.method == 'POST':
     latitude = request.POST.get('latitude')
     longitude = request.POST.get('longitude')
-
     profile = Profile.objects.get(user=request.user)
     profile.latitude = latitude
     profile.longitude = longitude
     profile.save()
     return HttpResponse(status=200)
-  
   profile = Profile.objects.get(user=request.user)
   context = {'data': location_data, 'ip': ip_data, 'profile': profile }
   return render(request, 'user/match.html', context)
+  
+  
 
 # @csrf_exempt
 # @require_POST
@@ -180,7 +163,6 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
     
         
-
 class CommentUpdateView(LoginRequiredMixin, UpdateView):
     model = Comment
     fields = ['content']
@@ -190,6 +172,7 @@ class CommentUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
 
+      
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
     template_name = 'user/delete_comment.html'

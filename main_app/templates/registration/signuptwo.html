@@ -1,8 +1,4 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
+<!-- <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitMeIn</title>
@@ -12,15 +8,17 @@
 </head>
 
 <body>
-    <h1>Sign Up</h1>
+    <h1>Almost there</h1>
+    <h2>Let us know a bit more about you</h2>
     <p class="red-text">{{ error_message }}</p>
 
-    <form method="POST">
+    <form action="{% url 'profile' %}" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn">Sign Up</button>
+        <table>
+            {{ profile_form.as_table }}
+        </table>
+        <input type="submit" value="Submit!" />
     </form>
-
 </body>
 
-</html>
+</html> -->
