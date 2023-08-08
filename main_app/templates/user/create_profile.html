@@ -5,7 +5,7 @@
 
 <h1>Create Profile</h1>
 
-<form action="{% url 'profile' %}" method="POST">
+<form action="" method="POST">
   {% csrf_token %}
   <table>
     {{ form.as_table }}

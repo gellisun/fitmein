@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
+{% load static %}
+<script src="{% static 'script.js' %}"></script>
+
 {% block content %}
 
 <h1>Set your preferences</h1>
 
 <ul>
     <div>
-        <h3>CHeck your location</h3>
+        <h3>3rd party API:CHeck your location</h3>
         <p>Data Query: {{data.query}}</p>
         <ul>
             <li>Country: {{ data.country}}</li>
@@ -18,6 +21,7 @@
             <li>IP: {{ ip }}</li>
         </ul>
         <p>{{data}}</p>
+
         <h2>Using HTML API</h2>
         <p>Click on button</p> 
         <button onclick="getLocation()">Location:</button>

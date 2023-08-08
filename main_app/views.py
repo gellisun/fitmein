@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.utils import timezone
+from django.http import HttpResponse, JsonResponse
 import requests
 import json
 import uuid
@@ -8,19 +10,22 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.http import HttpResponse
 
-from .models import Profile, Badges, User, Comment, Matcher
+from .models import Profile, Badges, User, Comment, Photo
+
 from .forms import ProfileForm, CommentForm
+
 
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required #  Login required for View Functions
 from django.contrib.auth.mixins import LoginRequiredMixin #  Login required for Class-based Views
 
-from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+
+# ---------------- Home ----------------------------
+
 
 def home(request):
   return render(request, 'home.html')
@@ -30,28 +35,25 @@ def about(request):
 
 @login_required
 def profile(request):
-    try:
-        profile = Profile.objects.get(user=request.user)
-        profile_exists = True
-    except Profile.DoesNotExist:
-        profile = None
-        profile_exists = False
-    comments = None  
-    if request.method == 'POST':
-        profile_form = ProfileForm(request.POST, instance=profile)
-        if profile_form.is_valid():
-            profile_form.instance.user = request.user
-            profile_form.save()
-            return redirect('profile')
-    else:
-        if profile_exists:
-            profile_form = ProfileForm(instance=profile)
-            comments = Comment.objects.filter(user=request.user) 
-        else:
-            profile_form = ProfileForm(instance=Profile(user=request.user))  
-
-    context = {'profile': profile, 'profile_form': profile_form, 'comments': comments}
+  print('User:', request.user)
+  # profile = Profile.objects.get(user=request.user)
+  try:
+    profile = Profile.objects.get(user=request.user)
+    print(profile.user)
+    context = {'profile': profile}
+    if profile:
+        print('profile exists')
+        profile_form = ProfileForm(instance=profile)
+        comments = Comment.objects.filter(user=request.user)
+        context['profile_form']=profile_form
+        context['comments']=comments
     return render(request, 'user/profile.html', context)
+  except Profile.DoesNotExist:
+    print('profile does not exist')
+    return redirect('create_profile')
+
+
+# ---------------- Sign-Up ------------------------
 
 def signup(request):
   error_message = ''
@@ -67,48 +69,26 @@ def signup(request):
   context = {'form': form, 'error_message': error_message}
   return render(request, 'registration/signup.html', context)
 
-#--------lucas---------
+#-------------Create Profile----------------
+
 class ProfileCreate(CreateView):
   model = Profile
   template_name = 'user/create_profile.html'
-  fields = ['age', 'gender', 'location']
+  fields = ['age', 'gender', 'location', 'is_couch_potato', 'favorites', 'latitude', 'longitude', 'is_active']
+  success_url = reverse_lazy('profile')  # Replace 'profile-detail' with your actual URL pattern
 
   def form_valid(self, form):
+      print('form_valid being executed')
       form.instance.user = self.request.user
-      print('form validation running')
+      print(form)
       return super().form_valid(form)
-#------ lucas end ------
-
-# @login_required
-# def profile(request):
-
-#  try:
-#     profile = Profile.objects.get(user=request.user)
-#     profile_exists = True
-#  except Profile.DoesNotExist:
-#     profile = None
-#     profile_exists = False
-#  if request.method == 'POST':
-#         print('checkpoint 1')
-#         profile_form = ProfileForm(request.POST, instance=profile)
-#         if profile_form.is_valid():
-#             profile_form.instance.user = request.user 
-#             profile_form.save()
-#             return redirect('profile') 
-#  else:
-#     profile_form = ProfileForm(instance=profile)
-#     print('checkpoint')
-#     print('Filter:', profile.user)
-#     if profile_exists:
-#       profile_form = ProfileForm(instance=profile)
-#       comments = Comment.objects.filter(user=profile.user)
-#     else:
-#       profile_form = ProfileForm()
-#  context = {'profile': profile, 'profile_form': profile_form, 'comments': comments}
-#  return render(request, 'user/profile.html', context)
 
 
+# -------------------- User Area -------------------------------
+
+@login_required
 def match(request):
+  print(request.user.id)
   ip = requests.get('https://api.ipify.org?format=json')
   ip_data = json.loads(ip.text)
   res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
@@ -117,16 +97,16 @@ def match(request):
   if request.method == 'POST':
     latitude = request.POST.get('latitude')
     longitude = request.POST.get('longitude')
-
     profile = Profile.objects.get(user=request.user)
     profile.latitude = latitude
     profile.longitude = longitude
     profile.save()
     return HttpResponse(status=200)
-  
   profile = Profile.objects.get(user=request.user)
   context = {'data': location_data, 'ip': ip_data, 'profile': profile }
   return render(request, 'user/match.html', context)
+  
+  
 
 # @csrf_exempt
 # @require_POST
@@ -178,7 +158,6 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
     
         
-
 class CommentUpdateView(LoginRequiredMixin, UpdateView):
     model = Comment
     fields = ['content']
@@ -188,6 +167,7 @@ class CommentUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
 
+      
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
     template_name = 'user/delete_comment.html'
@@ -197,22 +177,22 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
         return super().get_queryset().filter(user=self.request.user)
     
 
-# @login_required
-# def add_photo(request, user_id):
-#   # photo-file maps to the "name" attr on the <input>
-#   photo_file = request.FILES.get('photo-file', None)
-#   if photo_file:
-#     s3 = boto3.client('s3')
-#     # Need a unique "key" (filename)
-#     # It needs to keep the same file extension
-#     # of the file that was uploaded (.png, .jpeg, etc.)
-#     key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
-#     try:
-#       bucket = os.environ['S3_BUCKET']
-#       s3.upload_fileobj(photo_file, bucket, key)
-#       url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
-#       Photo.objects.create(url=url, user_id=user_id)
-#     except Exception as e:
-#       print('An error occurred uploading file to S3')
-#       print(e)
-#   return redirect('detail', user_id=user_id)
+@login_required
+def add_photo(request, user_id):
+  # photo-file maps to the "name" attr on the <input>
+  photo_file = request.FILES.get('photo_file', None)
+  if photo_file:
+    s3 = boto3.client('s3')
+    # Need a unique "key" (filename)
+    # It needs to keep the same file extension
+    # of the file that was uploaded (.png, .jpeg, etc.)
+    key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+    try:
+      bucket = os.environ['S3_BUCKET']
+      s3.upload_fileobj(photo_file, bucket, key)
+      url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+      Photo.objects.create(url=url, user_id=user_id)
+    except Exception as e:
+      print('An error occurred uploading file to S3')
+      print(e)
+  return redirect('profile')

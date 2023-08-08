@@ -1,26 +1,47 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FitMeIn</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+      crossorigin="anonymous"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<body>
-    <h1>Sign Up</h1>
-    <p class="red-text">{{ error_message }}</p>
+  <body>
+    <header style="position: sticky; top: 0; color: var(--bs-body-bg)">
+      <h1 style="text-align: center; position: static" id="app-name">
+        FitMeIn
+      </h1>
+      <br />
+    </header>
+    <div class="container" id="signup-container">
+        <div class="row">
+            <div class="col-mad-12">
+                <div class="section-header text-center pb-5">
+                    <h1>Sign Up</h1>
+                </div>
+                <p class="red-text">{{ error_message }}</p>
 
-    <form method="POST" action="{% url 'signup' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="hidden" name="next" value="{{ next }}">
-        <button type="submit" class="btn">Sign Up</button>
-    </form>
-</body>
-
+                <form method="POST">
+                {% csrf_token %} {{ form.as_p }}
+                <button type="submit" class="btn">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+  </body>
 </html>

@@ -1,14 +1,33 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+{% block content %}
 <!-- {% load static %} -->
 
-
 <h1>{{ user.username }}'s Profile Page</h1>
-<ul>
-  <li><a href="{% url 'about' %}">About</a></li>
-  <li><a href="{% url 'logout' %}">Log Out</a></li>
-</ul>
-{% if not profile %}
+
+{% for photo in user.photo_set.all %}
+      <img class="responsive-img card-panel" src="{{photo.url}}">
+    {% empty %}
+      <div class="card-panel teal-text center-align">No Photo Uploaded</div>
+    {% endfor %}
+    <form action="{% url 'plant' user.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
+    
+      {% csrf_token %}
+      <input type="file" name="photo_file">
+      <br><br>
+      <button type="submit" class="btn">Upload Photo</button>
+    </form>
+  </div>
+
+
 <div>
+    <form id="locationForm" method="post" action="{% url 'profile' %}">
+      {% csrf_token %}
+      <input type="hidden" name="latitude" id="latitudeInput">
+      <input type="hidden" name="longitude" id="longitudeInput">
+    </form>
+</div>
+<!-- {% if not profile %}      
+<div>  
   <form action="{% url 'profile' %}" method="POST">
     {% csrf_token %}
     <table>
@@ -17,7 +36,7 @@
     <input type="submit" value="Submit!" />
   </form>
 </div>
-{% else %}
+{% else %} -->
 
 <div>
   <ul>
@@ -48,11 +67,7 @@
         <a href="{% url 'delete_comment' comment.id %}">Delete</a>
     </div>
 {% endfor %}
-{% endif %}
-
-
-
-
+<!-- {% endif %} -->
 
 <!-- <script src="{% static 'user/profile_edit.js' %}"></script> -->
 
