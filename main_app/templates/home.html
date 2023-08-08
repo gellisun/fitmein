@@ -16,6 +16,9 @@
     integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
     crossorigin="anonymous"
   />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,800&display=swap" rel="stylesheet">
 </head>
 <body id="home-page">
     <header
@@ -26,7 +29,7 @@
         color: var(--bs-body-bg);
       "
     >
-      <h1 style="text-align: center; position: static">FitMeIn</h1>
+      <h1 style="text-align: center; position: static" id="app-name">FitMeIn</h1>
     </header>
     <main>{% block content %} {% endblock %}</main>
     <footer
@@ -44,7 +47,7 @@
             <div class="carousel-item active">
                 <img src="static/images/logo.png" class="d-block w-100" alt="...">
                 <div class="carousel-caption ">
-                    <h5>FitMeIn</h5>
+                    <h5 id="app-name">FitMeIn</h5>
                     <p>A motivational app for those who need that extra push in their workout routine. Made by couch-potatoes, for
                         couch-potatoes.</p>
                     <a href="{% url 'login' %}" class="btn btn-warning mt-3">Log In</a></p> <br>
@@ -189,7 +192,7 @@
                     <div class="card-body">
                         <img src="static/images/james.png" alt="" class="img-fluid rounded-circle">
                         <h3 class="card-title py-2">James Carter</h3>
-                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit deserunt laboriosam </p>
+                        <p class="card-text">Lucas is a wonderful developer and planner with a wide range of skills in software development.</p>
                         <p class="socials">
                             <a href="https://github.com/jamesc215">
                                 <i class="bi bi-github text-dark mx-1" id="git-logo"></i>
