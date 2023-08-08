@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,15 +13,17 @@
 </head>
 
 <body>
-    <h1>Sign Up</h1>
+    <h1>Almost there!</h1>
+    <h2>Let us know a bit more about you</h2>
     <p class="red-text">{{ error_message }}</p>
 
-    <form method="POST">
+    <form action="{% url 'profile' profile.id %}" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn">Sign Up</button>
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Submit!" />
     </form>
-
 </body>
 
 </html>

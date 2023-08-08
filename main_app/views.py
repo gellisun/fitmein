@@ -1,21 +1,28 @@
 from django.shortcuts import render, redirect
+from django.utils import timezone
+from django.http import HttpResponse, JsonResponse
 import requests
 import json
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
 
+from .models import Matcher
 from .models import Profile, Badges, User, Comment
+
 from .forms import ProfileForm, CommentForm
+
 
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required #  Login required for View Functions
 from django.contrib.auth.mixins import LoginRequiredMixin #  Login required for Class-based Views
 
-from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+
+# ---------------- Home ----------------------------
+
 
 def home(request):
   return render(request, 'home.html')
@@ -23,6 +30,50 @@ def home(request):
 def about(request):
   return render(request, 'about.html')
 
+
+# ---------------- 2-step Sign-Up ------------------------
+
+def signup(request):
+  error_message = ''
+  if request.method == 'POST':
+    form = UserCreationForm(request.POST)
+    if form.is_valid():
+      user = form.save()
+      login(request, user)
+      return redirect('profile')
+    else:
+      error_message = 'Invalid sign up - try again!'
+  form = UserCreationForm()
+  context = {'form': form, 'error_message': error_message}
+  return render(request, 'registration/signup.html', context)
+
+
+# -------------------- User Area -------------------------------
+
+@login_required
+def match(request):
+  print(request.user.id)
+  ip = requests.get('https://api.ipify.org?format=json')
+  ip_data = json.loads(ip.text)
+  res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
+  location_data_one = res.text #convert JSON to python dictionary
+  location_data = json.loads(location_data_one) #loading location data one~
+  if request.method == 'POST':
+    latitude = request.POST.get('latitude')
+    longitude = request.POST.get('longitude')
+
+    profile = Profile.objects.get(user=request.user)
+    profile.latitude = latitude
+    profile.longitude = longitude
+    profile.save()
+    return HttpResponse(status=200)
+
+  profile = Profile.objects.get(user=request.user)
+  return render(request, 'user/match.html', {
+    'data': location_data, 
+    'ip': ip_data,
+    'profile': profile
+  })
 
 @login_required
 def profile(request):
@@ -42,36 +93,10 @@ def profile(request):
             return redirect('profile') 
 
  else:
-    profile_form = ProfileForm(instance=profile)
-    comments = Comment.objects.filter(user=profile.user)
-    if profile_exists:
-      profile_form = ProfileForm(instance=profile)
-    else:
-      profile_form = ProfileForm()
- context = {'profile': profile, 'profile_form': profile_form, 'comments': comments}
+        profile_form = ProfileForm(instance=profile)
+
+ context = {'profile': profile, 'profile_form': profile_form,}
  return render(request, 'user/profile.html', context)
-
-def signup(request):
-  error_message = ''
-  if request.method == 'POST':
-    form = UserCreationForm(request.POST)
-    if form.is_valid():
-      user = form.save()
-      login(request, user)
-      return redirect('profile')
-    else:
-      error_message = 'Invalid sign up - try again!'
-  form = UserCreationForm()
-  context = {'form': form, 'error_message': error_message}
-  return render(request, 'registration/signup.html', context)
-
-def match(request):
-  ip = requests.get('https://api.ipify.org?format=json')
-  ip_data = json.loads(ip.text)
-  res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
-  location_data_one = res.text #convert JSON to python dictionary
-  location_data = json.loads(location_data_one) #loading location data one
-  return render(request, 'user/match.html', {'data': location_data, 'ip': ip_data })
 
 @csrf_exempt
 @require_POST
@@ -123,7 +148,6 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
     
         
-
 class CommentUpdateView(LoginRequiredMixin, UpdateView):
     model = Comment
     fields = ['content']
@@ -133,6 +157,7 @@ class CommentUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
 
+      
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
     template_name = 'user/delete_comment.html'
