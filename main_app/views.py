@@ -88,7 +88,6 @@ class ProfileCreate(CreateView):
 #  except Profile.DoesNotExist:
 #     profile = None
 #     profile_exists = False
-
 #  if request.method == 'POST':
 #         print('checkpoint 1')
 #         profile_form = ProfileForm(request.POST, instance=profile)
@@ -96,7 +95,6 @@ class ProfileCreate(CreateView):
 #             profile_form.instance.user = request.user 
 #             profile_form.save()
 #             return redirect('profile') 
-
 #  else:
 #     profile_form = ProfileForm(instance=profile)
 #     print('checkpoint')
