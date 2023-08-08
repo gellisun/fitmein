@@ -13,6 +13,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required #  Login required for View Functions
 from django.contrib.auth.mixins import LoginRequiredMixin #  Login required for Class-based Views
 
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+
 def home(request):
   return render(request, 'home.html')
 
@@ -31,20 +35,19 @@ def profile(request):
     profile_exists = False
 
  if request.method == 'POST':
-    profile_form = ProfileForm(request.POST, instance=profile)
-    if profile_form.is_valid():
-        profile_form.save()
-    else:
-        new_profile = profile_form.save(commit=False)
-        new_profile.user = request.user
-        new_profile.save()
+        profile_form = ProfileForm(request.POST, instance=profile)
+        if profile_form.is_valid():
+            profile_form.instance.user = request.user 
+            profile_form.save()
+            return redirect('profile') 
+
  else:
+    profile_form = ProfileForm(instance=profile)
     comments = Comment.objects.filter(user=profile.user)
     if profile_exists:
       profile_form = ProfileForm(instance=profile)
     else:
       profile_form = ProfileForm()
-
  context = {'profile': profile, 'profile_form': profile_form, 'comments': comments}
  return render(request, 'user/profile.html', context)
 
@@ -69,6 +72,30 @@ def match(request):
   location_data_one = res.text #convert JSON to python dictionary
   location_data = json.loads(location_data_one) #loading location data one
   return render(request, 'user/match.html', {'data': location_data, 'ip': ip_data })
+
+@csrf_exempt
+@require_POST
+def update_profile(request, profile_id):
+    field_id = request.POST.get('field_id')
+    new_value = request.POST.get('new_value')
+
+    # Get the Profile instance based on the profile_id
+    try:
+        profile = Profile.objects.get(id=profile_id)
+    except Profile.DoesNotExist:
+        return JsonResponse({'error': 'Profile not found'}, status=404)
+
+    if field_id == 'location':
+        profile.location = new_value
+    elif field_id == 'favorites':
+        profile.favorites = new_value
+    else:
+        return JsonResponse({'error': 'Invalid field ID'}, status=400)
+
+    profile.save()
+
+    return JsonResponse({'message': 'Profile updated successfully'}, status=200)
+
 
 class CommentListView(LoginRequiredMixin, ListView):
     model = Comment
@@ -113,4 +140,3 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
-    

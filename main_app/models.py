@@ -44,4 +44,4 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Comment by {self.user.username} on {self.created_at}"   
+        return f"Comment by {self.user.username} on {self.created_at}" 
