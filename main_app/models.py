@@ -17,15 +17,19 @@ class Profile(models.Model):
     age = models.IntegerField(validators=[MinValueValidator(0)], default=0)  
     location = models.CharField(max_length=50)
     is_couch_potato = models.BooleanField(default=True)
-    favorites = models.CharField(max_length=2, choices=ACTIVITIES)
+    favorites = models.CharField(max_length=2, choices=ACTIVITIES, default='RU')
+    is_active=models.BooleanField(default=False)
+    chosen_activities = models.CharField(max_length=2, choices=ACTIVITIES, default='RU')
+    latitude = models.FloatField(null=False, blank=True, default=51.515425825794125)
+    longitude = models.FloatField(null=False, blank=True, default=-0.07266577316737018)
+    created_at = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
-        return self.name
+        return self.user
 
     def get_absolute_url(self):
-        return reverse('detail', kwargs={'user_id': self.id})
+        return reverse('profile')
     
-
 class Badges(models.Model):
     name = models.CharField()
     icon = models.ImageField(max_length=255, upload_to=get_profile_image_filepath)
@@ -33,16 +37,7 @@ class Badges(models.Model):
 
 def get_profile_image_filename(self):
     return str(self.profile_image)[str(self.profile_image).index(f'profile_images/{self.pk}/'):]
-
-class Matcher(models.Model):
-    user = models.ManyToManyField(Profile)
-    chosen_activities = models.CharField(max_length=2, choices=ACTIVITIES)
-    latitude = models.FloatField(null=True, blank=True)
-    longitude = models.FloatField(null=True, blank=True)
-    created_at = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return self.name    
+  
     
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete =models.CASCADE)

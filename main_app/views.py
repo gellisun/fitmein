@@ -10,9 +10,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.http import HttpResponse
 
-from .models import Profile, Badges, User, Comment, Matcher
+from .models import Profile, Badges, User, Comment
 
 from .forms import ProfileForm, CommentForm
 
@@ -36,30 +35,25 @@ def about(request):
 
 @login_required
 def profile(request):
-    try:
-        profile = Profile.objects.get(user=request.user)
-        profile_exists = True
-    except Profile.DoesNotExist:
-        profile = None
-        profile_exists = False
-    comments = None  
-    if request.method == 'POST':
-        profile_form = ProfileForm(request.POST, instance=profile)
-        if profile_form.is_valid():
-            profile_form.instance.user = request.user
-            profile_form.save()
-            return redirect('profile')
-    else:
-        if profile_exists:
-            profile_form = ProfileForm(instance=profile)
-            comments = Comment.objects.filter(user=request.user) 
-        else:
-            profile_form = ProfileForm(instance=Profile(user=request.user))  
-
-    context = {'profile': profile, 'profile_form': profile_form, 'comments': comments}
+  print('User:', request.user)
+  # profile = Profile.objects.get(user=request.user)
+  try:
+    profile = Profile.objects.get(user=request.user)
+    print(profile.user)
+    context = {'profile': profile}
+    if profile:
+        print('profile exists')
+        profile_form = ProfileForm(instance=profile)
+        comments = Comment.objects.filter(user=request.user)
+        context['profile_form']=profile_form
+        context['comments']=comments
     return render(request, 'user/profile.html', context)
+  except Profile.DoesNotExist:
+    print('profile does not exist')
+    return redirect('create_profile')
 
-# ---------------- 2-step Sign-Up ------------------------
+
+# ---------------- Sign-Up ------------------------
 
 def signup(request):
   error_message = ''
@@ -75,18 +69,19 @@ def signup(request):
   context = {'form': form, 'error_message': error_message}
   return render(request, 'registration/signup.html', context)
 
-#--------lucas---------
+#-------------Create Profile----------------
+
 class ProfileCreate(CreateView):
   model = Profile
   template_name = 'user/create_profile.html'
-  fields = ['age', 'gender', 'location']
+  fields = ['age', 'gender', 'location', 'is_couch_potato', 'favorites', 'latitude', 'longitude', 'is_active']
+  success_url = reverse_lazy('profile')  # Replace 'profile-detail' with your actual URL pattern
 
   def form_valid(self, form):
+      print('form_valid being executed')
       form.instance.user = self.request.user
-      print('form validation running')
+      print(form)
       return super().form_valid(form)
-#------ lucas end ------
-
 
 
 # -------------------- User Area -------------------------------
