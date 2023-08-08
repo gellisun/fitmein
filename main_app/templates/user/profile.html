@@ -1,5 +1,5 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
+{% load static %}
 <h1>{{ user.username }}'s Profile Page</h1>
 <ul>
   <li><a href="{% url 'about' %}">About</a></li>
@@ -7,23 +7,26 @@
 </ul>
 {% if not profile %}
 <div>
-  <ul>
-  <li>Location: {{ profile.location }}</li>
-  <li>Age: {{ profile.age }}</li>
-  <li> Top Activities: {{ profile.get_favorites_display }}</li>
-  <li> Active Today: {{ profile.is_couch_potato }}</li>
-  </ul>
-</div>
-{% else %}
-<div>
   <form action="{% url 'profile' %}" method="POST">
     {% csrf_token %}
     <table>
       {{ profile_form.as_table }}
     </table>
-    <input type="submit" value="Submit!">
+    <input type="submit" value="Submit!" />
   </form>
 </div>
-{% endif %}
-      
+{% else %}
+<div>
+  <ul>
+    <li>
+      <span id="location" class="editable-field" data-field-name="location" contenteditable="true">{{ profile.location }}
+    </li>
+    <li>
+      <span id="favorites" class="editable-field" data-field-name="favorites" contenteditable="true">{{ profile.get_favorites_display }}
+    </li>
+  </ul>
+  <a href="">Delete Bio</a>
+</div>
+{% endif %} 
+<script src="{% static 'user/profile_edit.js' %}"></script>
 {% endblock %}

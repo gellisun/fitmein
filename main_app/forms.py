@@ -1,7 +1,8 @@
+from django import forms
 from django.forms import ModelForm
-from .models import Profile 
+from .models import Profile, ACTIVITIES
 
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        fields = ['location', 'age', 'gender', 'is_couch_potato', 'favorites']
+        fields = ['location', 'favorites']

@@ -36,5 +36,3 @@ def get_profile_image_filename(self):
 class Matcher(models.Model):
     user = models.ManyToManyField(Profile)
     chosen_activities = models.CharField(max_length=2, choices=ACTIVITIES)
-    
-    
