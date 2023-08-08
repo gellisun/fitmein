@@ -1,4 +1,4 @@
-{% load static %}
+<!-- {% load static %} -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +17,7 @@
     <h2>Let us know a bit more about you</h2>
     <p class="red-text">{{ error_message }}</p>
 
-    <form action="{% url 'profile' profile.id %}" method="POST">
+    <form action="" method="POST">
         {% csrf_token %}
         <table>
             {{ form.as_table }}
