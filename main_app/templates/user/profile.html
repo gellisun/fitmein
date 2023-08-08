@@ -1,19 +1,10 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
+{% load static %}
 <h1>{{ user.username }}'s Profile Page</h1>
 <ul>
   <li><a href="{% url 'about' %}">About</a></li>
   <li><a href="{% url 'logout' %}">Log Out</a></li>
 </ul>
-<div>
-  <ul>
-  <li>ID: {{ profile.id }}</li>
-  <li>Location: {{ profile.location }}</li>
-  <li>Age: {{ profile.age }}</li>
-  <li>Top Activities: {{ profile.get_favorites_display }}</li>
-  <li>Active Today: {{ profile.is_couch_potato }}</li>
-  </ul>
-</div>
 <div>
     <form id="locationForm" method="post" action="{% url 'profile' %}">
       {% csrf_token %}
@@ -21,5 +12,42 @@
       <input type="hidden" name="longitude" id="longitudeInput">
     </form>
 </div>
-      
+{% if not profile %}      
+<div>  
+  <form action="{% url 'profile' %}" method="POST">
+    {% csrf_token %}
+    <table>
+      {{ profile_form.as_p }}
+    </table>
+    <input type="submit" value="Submit!" />
+  </form>
+</div>
+{% else %}
+<div>
+  <ul>
+    <li>
+      <span id="location" class="editable-field" data-field-name="location" contenteditable="true">{{ profile.location }}
+    </li>
+    <li>
+      <span id="favorites" class="editable-field" data-field-name="favorites" contenteditable="true">{{ profile.get_favorites_display }}
+    </li>
+  </ul>
+  <a href="">Delete Bio</a>
+</div>
+{% endif %}
+
+<a href="{% url 'create_comment' %}">Click here to leave a comment for {{ user.username }}</a>
+
+{% for comment in comments %}
+    <div>
+        <p>{{ comment.content }}</p>
+        <a href="{% url 'edit_comment' comment.id %}">Edit</a>
+        <a href="{% url 'delete_comment' comment.id %}">Delete</a>
+    </div>
+{% endfor %}
+
+
+
+<script src="{% static 'user/profile_edit.js' %}"></script>
+
 {% endblock %}

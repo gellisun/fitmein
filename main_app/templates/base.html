@@ -36,23 +36,35 @@
       >
         <div class="container">
           <a href="{% url 'profile' %}">
-              <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center flex-nowrap" type="button">
-                PROFILE
-                </button>
-              </a>
-              <a href="{% url 'match' %}">
-              <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center navigation" type="button">
-                MATCH-ME
-                </button>
-              </a>
-              <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center" type="button">
-                Button
+            <button
+              class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center flex-nowrap"
+              type="button"
+            >
+              PROFILE
             </button>
-            <a href="{% url 'logout' %}">
-            <button class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center" type="button">
-                LOGOUT
+          </a>
+          <a href="{% url 'match' %}">
+            <button
+              class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center navigation"
+              type="button"
+            >
+              MATCH-ME
             </button>
-            </a>
+          </a>
+          <button
+            class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center"
+            type="button"
+          >
+            Button
+          </button>
+          <a href="{% url 'logout' %}">
+            <button
+              class="btn btn-primary d-flex flex-grow-1 flex-fill justify-content-center align-items-center"
+              type="button"
+            >
+              LOGOUT
+            </button>
+          </a>
         </div>
       </nav>
     </footer>
