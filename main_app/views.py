@@ -8,7 +8,7 @@ import os
 import boto3
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 
 from .models import Profile, Badges, User, Comment, Photo
@@ -161,16 +161,51 @@ def calculate_distance(request, profile_id):
 
 #     return JsonResponse({'message': 'Profile updated successfully'}, status=200)
 
+
+# def update_profile(request):
+#     if request.method == "POST":
+#         profile = request.user.profile  
+#         age = request.POST.get('age')
+#         location = request.POST.get('location')
+#         favorites = request.POST.get('favorites')
+        
+#         profile.age = age
+#         profile.location = location
+#         profile.favorites = favorites
+#         profile.save()
+
+#         return redirect('profile')  
+
+#     return render(request, 'profile.html') 
+
+# ---------------- Update Profile ------------------------
+class ProfileUpdate(UpdateView):
+  model = Profile
+  template_name = 'user/update_profile.html'
+  fields = ['gender', 'age', 'location', 'favorites', 'is_active']
+
+  success_url = reverse_lazy('profile')
+
+  def form_valid(self, form):
+      print('form_valid being executed')
+      form.instance.user = self.request.user
+      return super().form_valid(form)
+  
+  def get_success_url(self):
+        return reverse('profile')
+
+
 # ---------------Comment Section --------------------
 
 class CommentListView(LoginRequiredMixin, ListView):
     model = Comment
     template_name = 'user/profile.html'
     context_object_name = 'comments'
-    ordering = ['-date']
+    ordering = ['-created_at']
     # Filter comments for the current user
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
+        
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

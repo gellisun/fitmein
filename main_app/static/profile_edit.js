@@ -1,3 +1,22 @@
+{/* <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("profile-form");
+  const editableFields = document.querySelectorAll(".editable-field");
+
+  editableFields.forEach(function (field) {
+    field.addEventListener("input", function () {
+      const fieldName = field.getAttribute("data-field-name");
+      const hiddenInput = document.createElement("input");
+      hiddenInput.type = "hidden";
+      hiddenInput.name = fieldName;
+      hiddenInput.value = field.textContent;
+      form.appendChild(hiddenInput);
+    })
+  })
+)};
+</script>  */}
+
+
 // document.addEventListener('DOMContentLoaded', function () {
 //     const profileId = '{{ profile.id }}'; // Replace with the actual profile ID
 //     const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
