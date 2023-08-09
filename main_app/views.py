@@ -97,6 +97,8 @@ def match(request):
       profile.latitude = float(latitude)
       profile.longitude = float(longitude)
       profile.save()
+      print(profile.id)
+      find_match(request, profile)
     except json.JSONDecodeError:
        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
   else:     
@@ -115,13 +117,17 @@ def haversine(lat1, lon1, lat2, lon2):
 
 # Retrieve User latitude and longitude info and Database info and check haversine distance for a 
 # certain criteria (is_active, chosen_activities, maximum distance from user)
-def find_match(request, profile_id):
-  user_profile = Profile.objects.filter(id=profile_id)
-  user_latitude = user_profile.latitude
-  user_longitude = user_profile.longitude
-  user_chosen_activities = user_profile.chosen_activities #needs to be a comma-separated list
+def find_match(request, profile):
+  print('find_match')
+  print(profile.latitude)
+  user_profile = profile
+  user_latitude = profile.latitude
+  user_longitude = profile.longitude
+  user_chosen_activities = profile.chosen_activities #needs to be a comma-separated list
+  print(profile.chosen_activities)
   # Filter profiles
-  active_profiles = Profile.objects.filter(is_active=True, chosen_activities__in=user_chosen_activities).exclude(id=profile_id)
+  active_profiles = Profile.objects.filter(is_active=True, chosen_activities__in=user_chosen_activities).exclude(id=profile.id)
+  print(active_profiles)
   matched_profiles = []
   matched_distance = [] 
   #Check if haversine distance is within a range (5.0km)
