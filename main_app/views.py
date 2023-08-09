@@ -29,12 +29,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 def home(request):
   return render(request, 'home.html')
 
+
 def about(request):
   return render(request, 'about.html')
 
+
 @login_required
 def profile(request):
-  # profile = Profile.objects.get(user=request.user)
   try:
     profile = Profile.objects.get(user=request.user)
     context = {'profile': profile}
@@ -50,6 +51,7 @@ def profile(request):
 
 # ---------------- Sign-Up ------------------------
 
+
 def signup(request):
   error_message = ''
   if request.method == 'POST':
@@ -64,7 +66,9 @@ def signup(request):
   context = {'form': form, 'error_message': error_message}
   return render(request, 'registration/signup.html', context)
 
+
 #-------------Create Profile----------------
+
 
 class ProfileCreate(CreateView):
   model = Profile
@@ -100,7 +104,6 @@ class ActivityUpdate(UpdateView):
 # Load The Matching Page
 @login_required
 def match(request):
-  print(request.user.id)
   ip = requests.get('https://api.ipify.org?format=json')
   ip_data = json.loads(ip.text)
   res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
@@ -117,6 +120,22 @@ def match(request):
   profile = Profile.objects.get(user=request.user)
   context = {'data': location_data, 'ip': ip_data, 'profile': profile }
   return render(request, 'user/match.html', context)
+
+
+class ActivityUpdate(UpdateView):
+  model = Profile
+  template_name = 'user/update_activity.html'
+  fields = ['is_couch_potato', 'chosen_activities']
+  success_url = reverse_lazy('match')
+
+  def form_valid(self, form):
+      print('form_valid being executed')
+      form.instance.user = self.request.user
+      return super().form_valid(form)
+  
+  def get_success_url(self):
+        return reverse('match')
+
 
 #Formula for the Haversine Distance
 def haversine(lat1, lon1, lat2, lon2):
@@ -169,6 +188,7 @@ class ProfileUpdate(UpdateView):
 
 # ---------------Comment Section --------------------
 
+
 class CommentListView(LoginRequiredMixin, ListView):
     model = Comment
     template_name = 'user/profile.html'
@@ -182,9 +202,9 @@ class CommentListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['comments'] = self.get_queryset()
-        return context
-    
-     
+        return context  
+
+
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
@@ -217,13 +237,9 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
 
 @login_required
 def add_photo(request, user_id):
-  # photo-file maps to the "name" attr on the <input>
   photo_file = request.FILES.get('photo_file', None)
   if photo_file:
     s3 = boto3.client('s3')
-    # Need a unique "key" (filename)
-    # It needs to keep the same file extension
-    # of the file that was uploaded (.png, .jpeg, etc.)
     key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
     try:
       bucket = os.environ['S3_BUCKET']
