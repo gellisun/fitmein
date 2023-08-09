@@ -1,30 +1,28 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
+
 import requests
 import json
 import uuid
 import os
 import boto3
+import math
+
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic import ListView, DetailView
-from django.urls import reverse_lazy
-from django.utils import timezone
+from django.views.generic import ListView
 
-from .models import Profile, Badges, User, Comment, Photo
+from django.urls import reverse_lazy, reverse
+from .models import Profile, Comment, Photo
 
-from .forms import ProfileForm, CommentForm
-
+from .forms import ProfileForm
 
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required #  Login required for View Functions
-from django.contrib.auth.mixins import LoginRequiredMixin #  Login required for Class-based Views
+from django.contrib.auth.decorators import login_required 
+from django.contrib.auth.mixins import LoginRequiredMixin 
 
-from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
 
-import math
 
 # ---------------- Home ----------------------------
 
@@ -32,12 +30,13 @@ import math
 def home(request):
   return render(request, 'home.html')
 
+
 def about(request):
   return render(request, 'about.html')
 
+
 @login_required
 def profile(request):
-  # profile = Profile.objects.get(user=request.user)
   try:
     profile = Profile.objects.get(user=request.user)
     context = {'profile': profile}
@@ -53,6 +52,7 @@ def profile(request):
 
 # ---------------- Sign-Up ------------------------
 
+
 def signup(request):
   error_message = ''
   if request.method == 'POST':
@@ -67,7 +67,9 @@ def signup(request):
   context = {'form': form, 'error_message': error_message}
   return render(request, 'registration/signup.html', context)
 
+
 #-------------Create Profile----------------
+
 
 class ProfileCreate(CreateView):
   model = Profile
@@ -83,6 +85,22 @@ class ProfileCreate(CreateView):
 
 
 # -------------------- Matching Functions -------------------------------
+
+
+class ActivityUpdate(UpdateView):
+  model = Profile
+  template_name = 'user/update_activity.html'
+  fields = ['is_couch_potato', 'chosen_activities']
+  success_url = reverse_lazy('match')
+
+  def form_valid(self, form):
+      print('form_valid being executed')
+      form.instance.user = self.request.user
+      return super().form_valid(form)
+  
+  def get_success_url(self):
+        return reverse('match')
+
 
 # Load The Matching Page
 @login_required
@@ -104,6 +122,22 @@ def match(request):
   else:     
     profile = Profile.objects.get(user=request.user)
     return render(request, 'user/match.html', {'profile': profile})
+
+
+class ActivityUpdate(UpdateView):
+  model = Profile
+  template_name = 'user/update_activity.html'
+  fields = ['is_couch_potato', 'chosen_activities']
+  success_url = reverse_lazy('match')
+
+  def form_valid(self, form):
+      print('form_valid being executed')
+      form.instance.user = self.request.user
+      return super().form_valid(form)
+  
+  def get_success_url(self):
+        return reverse('match')
+
 
 #Formula for the Haversine Distance
 def haversine(lat1, lon1, lat2, lon2):
@@ -141,47 +175,42 @@ def find_match(request, profile):
   return render(request, 'user/match.html', {'matched_profiles':matched_profiles, 'matched_distance':matched_distance, 'coordinates':coordinates})
 
 
+# ---------------- Update Profile ------------------------
+class ProfileUpdate(UpdateView):
+  model = Profile
+  template_name = 'user/update_profile.html'
+  fields = ['gender', 'age', 'location', 'favorites', 'is_active']
 
-# @csrf_exempt
-# @require_POST
-# def update_profile(request, profile_id):
-#     field_id = request.POST.get('field_id')
-#     new_value = request.POST.get('new_value')
+  success_url = reverse_lazy('profile')
 
-#     # Get the Profile instance based on the profile_id
-#     try:
-#         profile = Profile.objects.get(id=profile_id)
-#     except Profile.DoesNotExist:
-#         return JsonResponse({'error': 'Profile not found'}, status=404)
+  def form_valid(self, form):
+      print('form_valid being executed')
+      form.instance.user = self.request.user
+      return super().form_valid(form)
+  
+  def get_success_url(self):
+        return reverse('profile')
 
-#     if field_id == 'location':
-#         profile.location = new_value
-#     elif field_id == 'favorites':
-#         profile.favorites = new_value
-#     else:
-#         return JsonResponse({'error': 'Invalid field ID'}, status=400)
-
-#     profile.save()
-
-#     return JsonResponse({'message': 'Profile updated successfully'}, status=200)
 
 # ---------------Comment Section --------------------
+
 
 class CommentListView(LoginRequiredMixin, ListView):
     model = Comment
     template_name = 'user/profile.html'
     context_object_name = 'comments'
-    ordering = ['-date']
+    ordering = ['-created_at']
     # Filter comments for the current user
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
+        
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['comments'] = self.get_queryset()
-        return context
-    
-     
+        return context  
+
+
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
@@ -214,13 +243,9 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
 
 @login_required
 def add_photo(request, user_id):
-  # photo-file maps to the "name" attr on the <input>
   photo_file = request.FILES.get('photo_file', None)
   if photo_file:
     s3 = boto3.client('s3')
-    # Need a unique "key" (filename)
-    # It needs to keep the same file extension
-    # of the file that was uploaded (.png, .jpeg, etc.)
     key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
     try:
       bucket = os.environ['S3_BUCKET']

@@ -8,7 +8,7 @@
 }
 
 #app-name {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'DM Sans', sans-serif !important;
   letter-spacing: .1rem;
 }
 
@@ -16,8 +16,9 @@ a.button {
   text-decoration: none;
   color: black;
 }
-#home-page {
-  background: #f1fbff;
+
+#home-page, body {
+  background: #13996F;
 }
 
 #team{
@@ -34,6 +35,34 @@ section.padding {
 
 #git-logo{
   font-size: 35px;
+}
+
+#top-nav-bar * {
+  color: white;
+  text-decoration: none;
+  outline: none;
+  border: 0;
+  background: #a478f5;
+  font-size: 22px;
+}
+#top-nav-icon-1 {
+  color: lightskyblue;
+}
+#top-nav-icon-2 {
+  color: red;
+}
+#top-nav-icon-3 {
+  color: red;
+}
+#top-nav-icon-4 {
+  color: black;
+}
+
+#logo-home {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  border-radius: 20px;
 }
 
 .carousel-item {
@@ -81,29 +110,65 @@ section.padding {
   margin: 0 5rem 0 5rem;
 }
 
+
+/* profile page */
+.card-panel {
+  border-radius: 50%;
+  width: 10rem;
+}
+
+
+
+@media only screen and (min-width: 1281px) and (max-width: 2100px){
+
+  .wrapper{
+    display: none;
+  }
+    .carousel-item {
+      top: 0px;
+      bottom: 700px;
+      height: 120vh;
+      min-height: 400px;
+    }
+    .carousel-caption {
+      top: 400px;
+      z-index: 1;
+    }
+    
+}
+
 @media only screen and (min-width: 992px) and (max-width: 1280px){
   .carousel-item {
-    height: 110vh;
-    min-height: 100px;
+    height: 80vh;
   }
   .carousel-caption {
     bottom: 500px;
     z-index: 1;
   }
+  .wrapper {
+    display: none;
+  }
 }
 
+
 @media only screen and (min-width: 768px) and (max-width: 991px){
+  .carousel-item {
+    height: 40vh;
+  }
   .carousel-caption{
     bottom: 350px;
   }
   .carousel-caption p{
     width: 100%;
   }
+  .wrapper {
+    display: none;
+  }
 }
 
 @media only screen and (max-width: 767px){
   .carousel-caption {
-    bottom: 300px;
+    top: 0px;
   }
   .carousel-caption h5{
     font-size: 30px;
@@ -112,15 +177,19 @@ section.padding {
     padding: 10px 15px;
   }
   /* .carousel-caption p {
-    /* width: 100px;
+    width: 200px;
     line-height: 1.6;
-    font-size: 12px;
-  } */
+    font-size: 14px;
+  }  */
 
   .carousel-item {
-    height: 50vh;
-    min-height: 100px;
+    height:50vh;
+    max-height: 500px;
+    min-height: 200px
   } 
+  #top-nav-bar {
+    display:none;
+}
 }
 
 footer{
@@ -130,7 +199,7 @@ footer{
 nav{
   display: grid;
   place-items: center;
-  background-color: grey;
+  background-color: #a478f5;
   height: 70px
 }
 
@@ -189,9 +258,44 @@ nav{
 }
 
 .wrapper .button span {
-  font-size: 28px;
+  font-size: 25px;
   color: #f1fbff;
   font-weight: 500;
   line-height: 60px;
   margin: 3px;
+}
+
+/* profile and update_profile page */
+
+.profile_photo {
+  border-radius: 50%; 
+  width: 180px; 
+  height: 180px; 
+  object-fit: cover; 
+}
+
+.comment-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.comment_table th, .comment_table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+
+.comment_table th {
+  background-color: #a478f5;
+  color: white;
+}
+
+
+.btn, .btn-primary {
+  background-color: #a478f5;
+}
+
+.edit_link, .delete_link{
+  color:#a478f5
 }
