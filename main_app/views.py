@@ -11,7 +11,7 @@ from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
 from django.utils import timezone
 
-from .models import Profile, Badges, User, Comment
+from .models import Profile, Badges, User, Comment, Photo
 
 from .forms import ProfileForm, CommentForm
 
@@ -87,23 +87,21 @@ class ProfileCreate(CreateView):
 # Load The Matching Page
 @login_required
 def match(request):
-  print(request.user.id)
-  ip = requests.get('https://api.ipify.org?format=json')
-  ip_data = json.loads(ip.text)
-  res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
-  location_data_one = res.text #convert JSON to python dictionary
-  location_data = json.loads(location_data_one) #loading location data one
+  # Using HTML 5 Geolocation
   if request.method == 'POST':
-    latitude = request.POST.get('latitude')
-    longitude = request.POST.get('longitude')
+    try:
+      data = json.loads(request.body)
+      latitude = data.get('latitude')
+      longitude = data.get('longitude')
+      profile = Profile.objects.get(user=request.user)
+      profile.latitude = float(latitude)
+      profile.longitude = float(longitude)
+      profile.save()
+    except json.JSONDecodeError:
+       return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+  else:     
     profile = Profile.objects.get(user=request.user)
-    profile.latitude = latitude
-    profile.longitude = longitude
-    profile.save()
-    return HttpResponse(status=200)
-  profile = Profile.objects.get(user=request.user)
-  context = {'data': location_data, 'ip': ip_data, 'profile': profile }
-  return render(request, 'user/match.html', context)
+    return render(request, 'user/match.html', {'profile': profile})
 
 #Formula for the Haversine Distance
 def haversine(lat1, lon1, lat2, lon2):
@@ -117,24 +115,24 @@ def haversine(lat1, lon1, lat2, lon2):
 
 # Retrieve User latitude and longitude info and Database info and check haversine distance for a 
 # certain criteria (is_active, chosen_activities, maximum distance from user)
-def calculate_distance(request, profile_id):
+def find_match(request, profile_id):
   user_profile = Profile.objects.filter(id=profile_id)
   user_latitude = user_profile.latitude
   user_longitude = user_profile.longitude
   user_chosen_activities = user_profile.chosen_activities #needs to be a comma-separated list
-
   # Filter profiles
   active_profiles = Profile.objects.filter(is_active=True, chosen_activities__in=user_chosen_activities).exclude(id=profile_id)
-
-  nearby_profiles = []
-  
+  matched_profiles = []
+  matched_distance = [] 
   #Check if haversine distance is within a range (5.0km)
   for profile in active_profiles:
-    distance = haversine(user_latitude, user_longitude, profile.latitude, profile.longitude)
+    distance = profile.haversine(user_latitude, user_longitude)  
     if distance < 5.0:
-      nearby_profiles.append(profile)
-
-  return render(request, 'match.html', {'nearby_profiles': nearby_profiles})
+      profile['distance']=distance #add a temporary field to my database named 'distance'. Needs testing
+      matched_profiles.append(profile)
+      # matched_distance.append(distance)
+      coordinates = {'user_latitude':user_latitude, 'user_longitude':user_longitude}
+  return render(request, 'user/match.html', {'matched_profiles':matched_profiles, 'matched_distance':matched_distance, 'coordinates':coordinates})
 
 
 
@@ -208,22 +206,22 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
         return super().get_queryset().filter(user=self.request.user)
     
 
-# @login_required
-# def add_photo(request, user_id):
-#   # photo-file maps to the "name" attr on the <input>
-#   photo_file = request.FILES.get('photo-file', None)
-#   if photo_file:
-#     s3 = boto3.client('s3')
-#     # Need a unique "key" (filename)
-#     # It needs to keep the same file extension
-#     # of the file that was uploaded (.png, .jpeg, etc.)
-#     key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
-#     try:
-#       bucket = os.environ['S3_BUCKET']
-#       s3.upload_fileobj(photo_file, bucket, key)
-#       url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
-#       Photo.objects.create(url=url, user_id=user_id)
-#     except Exception as e:
-#       print('An error occurred uploading file to S3')
-#       print(e)
-#   return redirect('detail', user_id=user_id)
+@login_required
+def add_photo(request, user_id):
+  # photo-file maps to the "name" attr on the <input>
+  photo_file = request.FILES.get('photo_file', None)
+  if photo_file:
+    s3 = boto3.client('s3')
+    # Need a unique "key" (filename)
+    # It needs to keep the same file extension
+    # of the file that was uploaded (.png, .jpeg, etc.)
+    key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+    try:
+      bucket = os.environ['S3_BUCKET']
+      s3.upload_fileobj(photo_file, bucket, key)
+      url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+      Photo.objects.create(url=url, user_id=user_id)
+    except Exception as e:
+      print('An error occurred uploading file to S3')
+      print(e)
+  return redirect('profile')
