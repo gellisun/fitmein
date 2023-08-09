@@ -32,8 +32,8 @@ function error() {
 }
 
 // Function to get CSRF token from cookies
-function getCookie(name) {
-    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+function getCsrf(csrf) {
+    const cookieValue = document.cookie.match('(^|;)\\s*' + csrf + '\\s*=\\s*([^;]+)');
     return cookieValue ? cookieValue.pop() : '';
 }
 
@@ -44,7 +44,7 @@ function sendToServer(latitude, longitude){
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken'),
+            'X-CSRFToken': getCsrf('csrftoken'),
         },
         body: JSON.stringify(data),
     })
