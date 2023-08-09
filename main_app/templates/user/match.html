@@ -24,7 +24,7 @@
 
         <h2>Using HTML API</h2>
         <p>Click on button</p> 
-        <button onclick="getLocation()">Location:</button>
+        <button onclick="getLocation()">Find a Match</button>
             {% csrf_token %}
             <p>Latitude: <span id="latitude">{{ profile.latitude }}</span></p>
             <p>Longitude: <span id="longitude">{{ profile.longitude }}</span></p>
@@ -33,6 +33,28 @@
                 <input type="hidden" name="latitude" id="latitudeInput" value="{{ profile.latitude }}">
                 <input type="hidden" name="longitude" id="longitudeInput" value="{{ profile.longitude }}">
             </form>
+        
+            <button id="activeUserBtn">SHOW ME WHO WANTS TO WORKOUT!</button>
+            <table id="profile-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Gender</th>
+                        <th>Distance (km)</th>
+                        <th>Matching Activities</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for profile in nearby_profiles %}
+                    <tr>
+                        <td>{{ profile.user }}</td>
+                        <td>{{ profile.gender }}</td>
+                        <td>{{ haversine(profile.latitude, profile.longitude, target_latitude, target_longitude)|floatformat:2 }}</td>
+                        <td>{{ profile.chosen_activities }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
     </div>
 </ul>
 

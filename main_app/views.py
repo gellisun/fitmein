@@ -24,6 +24,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin #  Login required for 
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 
+import math
+
 # ---------------- Home ----------------------------
 
 
@@ -80,8 +82,9 @@ class ProfileCreate(CreateView):
       return super().form_valid(form)
 
 
-# -------------------- User Area -------------------------------
+# -------------------- Matching Functions -------------------------------
 
+# Load The Matching Page
 @login_required
 def match(request):
   print(request.user.id)
@@ -101,8 +104,39 @@ def match(request):
   profile = Profile.objects.get(user=request.user)
   context = {'data': location_data, 'ip': ip_data, 'profile': profile }
   return render(request, 'user/match.html', context)
+
+#Formula for the Haversine Distance
+def haversine(lat1, lon1, lat2, lon2):
+  R = 6371
+  dist_lat = math.radians(lat2 - lat1)
+  dist_lon = math.radians(lon2 - lon1)
+  a = math.sin(dist_lat / 2) * math.sin(dist_lat / 2) + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dist_lon / 2) * math.sin(dist_lon / 2)
+  c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+  distance = R*c
+  return distance
+
+# Retrieve User latitude and longitude info and Database info and check haversine distance for a 
+# certain criteria (is_active, chosen_activities, maximum distance from user)
+def calculate_distance(request, profile_id):
+  user_profile = Profile.objects.filter(id=profile_id)
+  user_latitude = user_profile.latitude
+  user_longitude = user_profile.longitude
+  user_chosen_activities = user_profile.chosen_activities #needs to be a comma-separated list
+
+  # Filter profiles
+  active_profiles = Profile.objects.filter(is_active=True, chosen_activities__in=user_chosen_activities).exclude(id=profile_id)
+
+  nearby_profiles = []
   
-  
+  #Check if haversine distance is within a range (5.0km)
+  for profile in active_profiles:
+    distance = haversine(user_latitude, user_longitude, profile.latitude, profile.longitude)
+    if distance < 5.0:
+      nearby_profiles.append(profile)
+
+  return render(request, 'match.html', {'nearby_profiles': nearby_profiles})
+
+
 
 # @csrf_exempt
 # @require_POST
@@ -127,6 +161,7 @@ def match(request):
 
 #     return JsonResponse({'message': 'Profile updated successfully'}, status=200)
 
+# ---------------Comment Section --------------------
 
 class CommentListView(LoginRequiredMixin, ListView):
     model = Comment
