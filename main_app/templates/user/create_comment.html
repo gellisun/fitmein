@@ -1,20 +1,28 @@
+
+
+
+
 {% extends 'base.html' %}
 {% block content %}
 
-<a href="/profile">Go Back</a>
-<div class="container">
-    <div class="row">
-        <div class="col-mad-12">
-            <div class="section-header text-center pb-5">
-                <h2>Leave a comment for {{ user.username }}...</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input type="submit" value="Save">
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+
+<a href="/profile" class="back_link">Go Back</a>
+
+<h2>Leave a comment for {{ user.username }}...</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+   <a href="/profile" class="save-btn"> <button type="submit" valie= "Save" class="comment-btn">Save</button></a>
+    
+   
+  
+
+
+</form>
+
+
+
 
 {% endblock %}
+
+

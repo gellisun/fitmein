@@ -277,6 +277,7 @@ nav{
 .comment-table {
   width: 100%;
   border-collapse: collapse;
+  border-radius: 12px;
 }
 
 .comment_table th, .comment_table td {
@@ -289,13 +290,16 @@ nav{
 .comment_table th {
   background-color: #a478f5;
   color: white;
+  border-radius: 12px;
 }
 
 
-.btn, .btn-primary {
-  background-color: #a478f5;
+.update-btn, .comment-btn, .photo-btn, .save-btn {
+  background: #a478f5;
+  color:white;
+  border-radius: 15px;
 }
 
-.edit_link, .delete_link{
+.edit_link, .delete_link, .back_link{
   color:#a478f5
 }
