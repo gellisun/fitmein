@@ -1,8 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% load static %}
+<script src="{% static 'script.js' %}"></script>
 
 {% block content %}
-
-<h1>Set your preferences</h1>
+<header style="position: sticky; top: 0; color: var(--bs-body-bg)">
+  <h1 style="text-align: center; position: static" id="app-name">FitMeIn</h1>
+  <br />
+</header>
+<a href="{% url 'update_activity' pk=profile.pk %}">Update your preferences and availability!</a>
 
 <!-- <ul>
     <div>
