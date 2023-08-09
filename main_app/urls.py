@@ -9,6 +9,7 @@ urlpatterns = [
     path('profile/create/', views.ProfileCreate.as_view(), name='create_profile'),
     path('profile/', views.profile, name='profile'),
     path('match/', views.match, name='match'),
+    path('table/', views.find_match, name='find_match'),
     path('match/update_activity/<int:pk>/', views.ActivityUpdate.as_view(), name='update_activity'),
     path('create/', views.CommentCreateView.as_view(), name='create_comment'),
     path('edit/<int:pk>/', views.CommentUpdateView.as_view(), name='edit_comment'),
