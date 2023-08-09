@@ -264,3 +264,38 @@ nav{
   line-height: 60px;
   margin: 3px;
 }
+
+/* profile and update_profile page */
+
+.profile_photo {
+  border-radius: 50%; 
+  width: 180px; 
+  height: 180px; 
+  object-fit: cover; 
+}
+
+.comment-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.comment_table th, .comment_table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+
+.comment_table th {
+  background-color: #a478f5;
+  color: white;
+}
+
+
+.btn, .btn-primary {
+  background-color: #a478f5;
+}
+
+.edit_link, .delete_link{
+  color:#a478f5
+}

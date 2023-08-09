@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
 from multiselectfield import MultiSelectField
+import math
 
 GENDER = (('M', 'Male'),('F', 'Female'),('O', 'Other'))
 
@@ -31,6 +32,15 @@ class Profile(models.Model):
 
     def get_absolute_url(self):
         return reverse('profile')
+    
+    def haversine(self, lat2, lon2):
+        R = 6371
+        dist_lat = math.radians(lat2 - self.latitude)
+        dist_lon = math.radians(lon2 - self.longitude)
+        a = math.sin(dist_lat / 2) * math.sin(dist_lat / 2) + math.cos(math.radians(self.latitude)) * math.cos(math.radians(lat2)) * math.sin(dist_lon / 2) * math.sin(dist_lon / 2)
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        distance = R*c
+        return distance
     
 class Badges(models.Model):
     name = models.CharField()

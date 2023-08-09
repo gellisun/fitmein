@@ -8,46 +8,37 @@
 </header>
 <a href="{% url 'update_activity' pk=profile.pk %}">Update your preferences and availability!</a>
 
-<ul>
-  <div>
-    <h3>3rd party API:CHeck your location</h3>
-    <p>Data Query: {{data.query}}</p>
-    <ul>
-      <li>Country: {{ data.country}}</li>
-      <li>Country Code: {{ data.countryCode }}</li>
-      <li>Time Zone: {{ data.timezone }}</li>
-      <li>City: {{ data.city }}</li>
-      <li>Zip Code: {{ data.zip }}</li>
-      <li>Latitude: {{ data.lat }}</li>
-      <li>Longitude: {{ data.lon }}</li>
-      <li>IP: {{ ip }}</li>
-    </ul>
-    <p>{{data}}</p>
+<!-- <ul>
+    <div>
+        <h3>3rd party API:CHeck your location</h3>
+        <p>Data Query: {{data.query}}</p>
+        <ul>
+            <li>Country: {{ data.country}}</li>
+            <li>Country Code: {{ data.countryCode }}</li>
+            <li>Time Zone: {{ data.timezone }}</li>
+            <li>City: {{ data.city }}</li>
+            <li>Zip Code: {{ data.zip }}</li>
+            <li>Latitude: {{ data.lat }}</li>
+            <li>Longitude: {{ data.lon }}</li>
+            <li>IP: {{ ip }}</li>
+        </ul>
+        <p>{{data}}</p> -->
+<!-- Geolocation API -->
+        <h2>Using HTML API</h2>
 
-    <h2>Using HTML API</h2>
-    <p>Click on button</p>
-    <button onclick="getLocation()">Find a Match</button>
-    {% csrf_token %}
-    <p>Latitude: <span id="latitude">{{ profile.latitude }}</span></p>
-    <p>Longitude: <span id="longitude">{{ profile.longitude }}</span></p>
-    <form id="locationForm" method="post">
-      {% csrf_token %}
-      <input
-        type="hidden"
-        name="latitude"
-        id="latitudeInput"
-        value="{{ profile.latitude }}"
-      />
-      <input
-        type="hidden"
-        name="longitude"
-        id="longitudeInput"
-        value="{{ profile.longitude }}"
-      />
-    </form>
+        <h1>Match Page</h1>
+        <form id="locationForm">
+            <button id="displayCoord">Get Location</button>
+            <p><span id="latitude"></span></p>
+            <p><span id="longitude"></span></p>
+        </form>
 
-    <button id="activeUserBtn">SHOW ME WHO WANTS TO WORKOUT!</button>
-  </div>
+<!-- Display Matches Table -->
+{% with info=data %}
+{% include './table.html' %}
+{% endwith %}
+
+    </div>
 </ul>
 
 {% endblock %}

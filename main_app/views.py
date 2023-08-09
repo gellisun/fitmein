@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 import requests
 import json
@@ -19,9 +19,13 @@ from .forms import ProfileForm
 
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required #  Login required for View Functions
-from django.contrib.auth.mixins import LoginRequiredMixin #  Login required for Class-based Views
+from django.contrib.auth.decorators import login_required 
+from django.contrib.auth.mixins import LoginRequiredMixin 
 
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+
+import math
 
 # ---------------- Home ----------------------------
 
@@ -86,27 +90,6 @@ class ProfileCreate(CreateView):
 # -------------------- Matching Functions -------------------------------
 
 
-# Load The Matching Page
-@login_required
-def match(request):
-  ip = requests.get('https://api.ipify.org?format=json')
-  ip_data = json.loads(ip.text)
-  res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
-  location_data_one = res.text #convert JSON to python dictionary
-  location_data = json.loads(location_data_one) #loading location data one
-  if request.method == 'POST':
-    latitude = request.POST.get('latitude')
-    longitude = request.POST.get('longitude')
-    profile = Profile.objects.get(user=request.user)
-    profile.latitude = latitude
-    profile.longitude = longitude
-    profile.save()
-    return HttpResponse(status=200)
-  profile = Profile.objects.get(user=request.user)
-  context = {'data': location_data, 'ip': ip_data, 'profile': profile }
-  return render(request, 'user/match.html', context)
-
-
 class ActivityUpdate(UpdateView):
   model = Profile
   template_name = 'user/update_activity.html'
@@ -122,6 +105,33 @@ class ActivityUpdate(UpdateView):
         return reverse('match')
 
 
+# Load The Matching Page
+@login_required
+def match(request):
+  print(request.user.id)
+  ip = requests.get('https://api.ipify.org?format=json')
+  ip_data = json.loads(ip.text)
+  res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
+  location_data_one = res.text #convert JSON to python dictionary
+  location_data = json.loads(location_data_one) #loading location data one
+  if request.method == 'POST':
+    try:
+      data = json.loads(request.body)
+      latitude = data.get('latitude')
+      longitude = data.get('longitude')
+      profile = Profile.objects.get(user=request.user)
+      profile.latitude = float(latitude)
+      profile.longitude = float(longitude)
+      profile.save()
+      print(profile.id)
+      find_match(request, profile)
+    except json.JSONDecodeError:
+       return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+  else:     
+    profile = Profile.objects.get(user=request.user)
+    return render(request, 'user/match.html', {'profile': profile})
+  
+
 #Formula for the Haversine Distance
 def haversine(lat1, lon1, lat2, lon2):
   R = 6371
@@ -134,24 +144,30 @@ def haversine(lat1, lon1, lat2, lon2):
 
 # Retrieve User latitude and longitude info and Database info and check haversine distance for a 
 # certain criteria (is_active, chosen_activities, maximum distance from user)
-def calculate_distance(request, profile_id):
-  user_profile = Profile.objects.filter(id=profile_id)
-  user_latitude = user_profile.latitude
-  user_longitude = user_profile.longitude
-  user_chosen_activities = user_profile.chosen_activities #needs to be a comma-separated list
-
+def find_match(request, profile):
+  print('find_match')
+  print(profile.latitude)
+  user_profile = profile
+  user_latitude = profile.latitude
+  user_longitude = profile.longitude
+  user_chosen_activities = profile.chosen_activities #needs to be a comma-separated list
+  print(profile.chosen_activities)
   # Filter profiles
-  active_profiles = Profile.objects.filter(is_active=True, chosen_activities__in=user_chosen_activities).exclude(id=profile_id)
-
-  nearby_profiles = []
-  
+  active_profiles = Profile.objects.filter(is_active=True, chosen_activities__in=user_chosen_activities).exclude(id=profile.id)
+  print(active_profiles)
+  matched_profiles = []
+  matched_distance = [] 
   #Check if haversine distance is within a range (5.0km)
   for profile in active_profiles:
-    distance = haversine(user_latitude, user_longitude, profile.latitude, profile.longitude)
+    distance = profile.haversine(user_latitude, user_longitude)  
     if distance < 5.0:
-      nearby_profiles.append(profile)
+      profile['distance']=distance #add a temporary field to my database named 'distance'. Needs testing
+      matched_profiles.append(profile)
+      # matched_distance.append(distance)
+      coordinates = {'user_latitude':user_latitude, 'user_longitude':user_longitude}
+  return render(request, 'user/match.html', {'matched_profiles':matched_profiles, 'matched_distance':matched_distance, 'coordinates':coordinates})
 
-  return render(request, 'match.html', {'nearby_profiles': nearby_profiles})
+
 
 
 # ---------------Comment Section --------------------
@@ -161,10 +177,11 @@ class CommentListView(LoginRequiredMixin, ListView):
     model = Comment
     template_name = 'user/profile.html'
     context_object_name = 'comments'
-    ordering = ['-date']
+    ordering = ['-created_at']
     # Filter comments for the current user
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
+        
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
