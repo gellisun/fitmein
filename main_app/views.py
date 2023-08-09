@@ -11,7 +11,7 @@ from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
 from django.utils import timezone
 
-from .models import Profile, Badges, User, Comment
+from .models import Profile, Badges, User, Comment, Photo
 
 from .forms import ProfileForm, CommentForm
 
@@ -173,22 +173,22 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
         return super().get_queryset().filter(user=self.request.user)
     
 
-# @login_required
-# def add_photo(request, user_id):
-#   # photo-file maps to the "name" attr on the <input>
-#   photo_file = request.FILES.get('photo-file', None)
-#   if photo_file:
-#     s3 = boto3.client('s3')
-#     # Need a unique "key" (filename)
-#     # It needs to keep the same file extension
-#     # of the file that was uploaded (.png, .jpeg, etc.)
-#     key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
-#     try:
-#       bucket = os.environ['S3_BUCKET']
-#       s3.upload_fileobj(photo_file, bucket, key)
-#       url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
-#       Photo.objects.create(url=url, user_id=user_id)
-#     except Exception as e:
-#       print('An error occurred uploading file to S3')
-#       print(e)
-#   return redirect('detail', user_id=user_id)
+@login_required
+def add_photo(request, user_id):
+  # photo-file maps to the "name" attr on the <input>
+  photo_file = request.FILES.get('photo_file', None)
+  if photo_file:
+    s3 = boto3.client('s3')
+    # Need a unique "key" (filename)
+    # It needs to keep the same file extension
+    # of the file that was uploaded (.png, .jpeg, etc.)
+    key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+    try:
+      bucket = os.environ['S3_BUCKET']
+      s3.upload_fileobj(photo_file, bucket, key)
+      url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+      Photo.objects.create(url=url, user_id=user_id)
+    except Exception as e:
+      print('An error occurred uploading file to S3')
+      print(e)
+  return redirect('profile')

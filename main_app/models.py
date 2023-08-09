@@ -48,9 +48,9 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.user.username} on {self.created_at}" 
     
-# class Photo(models.Model):
-#   url = models.CharField(max_length=200)
-#   user = models.ForeignKey(User, on_delete=models.CASCADE)
+class Photo(models.Model):
+  url = models.CharField(max_length=200)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-#   def __str__(self):
-#     return f"Photo for user_id: {self.user_id} @{self.url}"
+  def __str__(self):
+    return f"Photo for user_id: {self.user_id} @{self.url}"

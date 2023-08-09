@@ -12,6 +12,8 @@ urlpatterns = [
     path('create/', views.CommentCreateView.as_view(), name='create_comment'),
     path('edit/<int:pk>/', views.CommentUpdateView.as_view(), name='edit_comment'),
     path('delete/<int:pk>/', views.CommentDeleteView.as_view(), name='delete_comment'),
-    # path('profile/<int:user_id>/add_photo/', views.add_photo, name='add_photo'),
+    path('profile/<int:user_id>/', views.profile, name='profile'),
+    path('add_photo/<int:user_id>/', views.add_photo, name='plant'),
+    
 ]
 
