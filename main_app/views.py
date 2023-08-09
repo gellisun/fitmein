@@ -87,23 +87,21 @@ class ProfileCreate(CreateView):
 # Load The Matching Page
 @login_required
 def match(request):
-  print(request.user.id)
-  ip = requests.get('https://api.ipify.org?format=json')
-  ip_data = json.loads(ip.text)
-  res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
-  location_data_one = res.text #convert JSON to python dictionary
-  location_data = json.loads(location_data_one) #loading location data one
+  # Using HTML 5 Geolocation
   if request.method == 'POST':
-    latitude = request.POST.get('latitude')
-    longitude = request.POST.get('longitude')
+    try:
+      data = json.loads(request.body)
+      latitude = data.get('latitude')
+      longitude = data.get('longitude')
+      profile = Profile.objects.get(user=request.user)
+      profile.latitude = float(latitude)
+      profile.longitude = float(longitude)
+      profile.save()
+    except json.JSONDecodeError:
+       return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+  else:     
     profile = Profile.objects.get(user=request.user)
-    profile.latitude = latitude
-    profile.longitude = longitude
-    profile.save()
-    return HttpResponse(status=200)
-  profile = Profile.objects.get(user=request.user)
-  context = {'data': location_data, 'ip': ip_data, 'profile': profile }
-  return render(request, 'user/match.html', context)
+    return render(request, 'user/match.html', {'profile': profile})
 
 #Formula for the Haversine Distance
 def haversine(lat1, lon1, lat2, lon2):
@@ -117,24 +115,24 @@ def haversine(lat1, lon1, lat2, lon2):
 
 # Retrieve User latitude and longitude info and Database info and check haversine distance for a 
 # certain criteria (is_active, chosen_activities, maximum distance from user)
-def calculate_distance(request, profile_id):
+def find_match(request, profile_id):
   user_profile = Profile.objects.filter(id=profile_id)
   user_latitude = user_profile.latitude
   user_longitude = user_profile.longitude
   user_chosen_activities = user_profile.chosen_activities #needs to be a comma-separated list
-
   # Filter profiles
   active_profiles = Profile.objects.filter(is_active=True, chosen_activities__in=user_chosen_activities).exclude(id=profile_id)
-
-  nearby_profiles = []
-  
+  matched_profiles = []
+  matched_distance = [] 
   #Check if haversine distance is within a range (5.0km)
   for profile in active_profiles:
-    distance = haversine(user_latitude, user_longitude, profile.latitude, profile.longitude)
+    distance = profile.haversine(user_latitude, user_longitude)  
     if distance < 5.0:
-      nearby_profiles.append(profile)
-
-  return render(request, 'match.html', {'nearby_profiles': nearby_profiles})
+      profile['distance']=distance #add a temporary field to my database named 'distance'. Needs testing
+      matched_profiles.append(profile)
+      # matched_distance.append(distance)
+      coordinates = {'user_latitude':user_latitude, 'user_longitude':user_longitude}
+  return render(request, 'user/match.html', {'matched_profiles':matched_profiles, 'matched_distance':matched_distance, 'coordinates':coordinates})
 
 
 
