@@ -1,73 +1,80 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitMeIn</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
-    crossorigin="anonymous"/>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,800&display=swap" rel="stylesheet">
 
-  </head>
-  <body>
-    <header
-      style="
-        position: sticky;
-        top: 0;
-        background: #a478f5;
-        color: var(--bs-body-bg);
-      "
-    >
-      <h1 style="text-align: center; position: static">FitMeIn</h1>
-    </header>
-    <main>
-      {% block content %}
-      
-      {% endblock %}
-    </main>
-    <footer
-      class="d-flex flex-fill justify-content-center align-items-center align-content-stretch my-0 mx-0"
-      style="position: sticky; background: #a478f5"
-    >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitMeIn</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,800&display=swap" rel="stylesheet">
+
+</head>
+
+<nav class="nav" id="top-nav-bar">
+  <div class="container-top-nav">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <img src="/static/images/logo.png" alt="Logo" width="100" height="70" id="logo-home">
+    </a>
+  </div>
+  <ul class="nav justify-content-end">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'profile' %}"><i class="bi bi-person-circle" id="top-nav-icon-1"></i>&nbsp;| Profile</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'match' %}"><i class="bi bi-person-hearts" id="top-nav-icon-2"></i>&nbsp;| Match-Me</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#"><i class="bi bi-heart-fill" id="top-nav-icon-3"></i>&nbsp;| Matches</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right" id="top-nav-icon-4"></i>&nbsp;| Log-Out</a>
+    </li>
+  </ul>
+</nav>
+  <main>
+    {% block content %}
+
+    {% endblock %}
+  </main>
+  <footer class="d-flex flex-fill justify-content-center align-items-center align-content-stretch my-0 mx-0"
+    style="position: sticky; background: #a478f5">
     <nav
-    class="navbar navbar-expand-md fixed-bottom bg-body d-flex flex-grow-1 flex-fill justify-content-center align-items-center align-self-stretch flex-nowrap py-3 pt-0 my-0 pb-0 mx-0 px-0 ps-0"
-    style="background: grey"
-  >
+      class="navbar navbar-expand-md fixed-bottom bg-body d-flex flex-grow-1 flex-fill justify-content-center align-items-center align-self-stretch flex-nowrap py-3 pt-0 my-0 pb-0 mx-0 px-0 ps-0"
+      style="background: grey">
       <a href="{% url 'profile' %}">
-      <div class="wrapper">
-      <div class="button">
-          <div class="icon"><i class="bi bi-person-circle"></i></div>
-          <span>Profile</span>
+        <div class="wrapper">
+          <div class="button">
+            <div class="icon"><i class="bi bi-person-circle"></i></div>
+            <span>Profile</span>
           </div>
       </a>
       <a href="{% url 'match' %}">
-      <div class="button">
+        <div class="button">
           <div class="icon"><i class="bi bi-heart-fill"></i></div>
           <span>Matches</span>
-          </div>
+        </div>
       </a>
       <a href="#">
-          <div class="button">
-              <div class="icon"><i class="bi bi-person-hearts"></i></div>
-              <span>Friends</span>
-          </div>
+        <div class="button">
+          <div class="icon"><i class="bi bi-person-hearts"></i></div>
+          <span>Friends</span>
+        </div>
       </a>
       <a href="{% url 'logout' %}">
-          <div class="button">
-              <div class="icon"><i class="bi bi-box-arrow-right"></i></div>
-              <span>Log-Out</span>
-          </div>
+        <div class="button">
+          <div class="icon"><i class="bi bi-box-arrow-right"></i></div>
+          <span>Log-Out</span>
+        </div>
       </a>
-          </div>
-  </nav>
-    </footer>
-  </body>
+      </div>
+    </nav>
+  </footer>
+</body>
+
 </html>
