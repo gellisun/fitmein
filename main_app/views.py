@@ -35,21 +35,17 @@ def about(request):
 
 @login_required
 def profile(request):
-  print('User:', request.user)
   # profile = Profile.objects.get(user=request.user)
   try:
     profile = Profile.objects.get(user=request.user)
-    print(profile.user)
     context = {'profile': profile}
     if profile:
-        print('profile exists')
         profile_form = ProfileForm(instance=profile)
         comments = Comment.objects.filter(user=request.user)
         context['profile_form']=profile_form
         context['comments']=comments
     return render(request, 'user/profile.html', context)
   except Profile.DoesNotExist:
-    print('profile does not exist')
     return redirect('create_profile')
 
 
