@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h1>Active Filters</h1>
+<h1>Active Users:</h1>
 
-{{ matched_profiles }}
-
+<div class="table-container">
 <table id="profile-table">
     <thead>
         <tr>
@@ -41,5 +40,5 @@
         {% endfor %}
     </tbody>
 </table>
-
+</div>
 {% endblock %}

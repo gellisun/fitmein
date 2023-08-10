@@ -1,21 +1,38 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% load static %}
 
 
 {% block content %}
 <header style="position: sticky; top: 0; color: var(--bs-body-bg)">
-  <h1 style="text-align: center; position: static" id="app-name">FitMeIn</h1>
-  <br />
+    <h1 style="text-align: center; position: static" id="app-name">FitMeIn</h1>
+    <br />
 </header>
 
-<h3><a href="{% url 'update_activity' pk=profile.pk %}" class="btn btn-warning mt-3">Step One: Select your activities here!</a></h3>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="row">
+        <div class="col-md-6">
+            <div
+                class="border rounded-5 p-3 bg-white shadow box-area text-center d-flex flex-column h-100 justify-content-center align-items-center">
+                <a href="{% url 'update_activity' pk=profile.pk %}"
+                    class="btn btn-warning btn-lg btn-block h-100 d-flex align-items-center justify-content-center">Step
+                    1: Select
+                    your workout preferences</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="border rounded-5 p-3 bg-white shadow box-area text-center d-flex flex-column h-100">
+                <form id="locationForm" class="d-flex flex-column justify-content-center align-items-center h-100">
+                    <button id="displayCoord"
+                        class="btn btn-warning btn-lg btn-block d-flex flex-column justify-content-center align-items-center h-100">Step
+                        2: Find a workout partner!</button>
+                    <p><span id="latitude"></span></p>
+                    <p><span id="longitude"></span></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-<h3>2. Find a match!</h3>
-<form id="locationForm">
-    <button id="displayCoord">Find me a match!</button>
-    <p><span id="latitude"></span></p>
-    <p><span id="longitude"></span></p>
-</form>
 
 
 {% endblock %}

@@ -283,3 +283,48 @@ nav{
 .edit_link, .delete_link, .back_link{
   color:#a478f5
 }
+
+/* Style for the container holding both tables */
+.table-container {
+    display: flex;
+}
+
+/* Style for each individual table */
+.table-container table {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    margin-right: 20px; /* Adjust spacing between tables */
+}
+
+/* Style for table headers */
+.table-container th {
+    background-color: #f2f2f2;
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Style for table cells */
+.table-container td {
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+}
+
+.box-area {
+  min-height: 300px;
+  /* Adjust the minimum height as needed */
+}
+
+.btn-full-width {
+  width: 100%;
+  display: block;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.fill-container-height {
+  height: 100%;
+}
+

@@ -136,7 +136,7 @@ def find_match(request, profile_id):
   matched_distance = [] 
   #Check if haversine distance is within a range (5.0km)
   for profile in active_profiles:
-    distance = haversine(user_latitude, user_longitude, profile.latitude, profile.longitude)  
+    distance = round(haversine(user_latitude, user_longitude, profile.latitude, profile.longitude), 1)  
     if distance < 8000.0:
       matched_profiles.append(profile)
       matched_distance.append(distance)
@@ -152,13 +152,16 @@ def find_match(request, profile_id):
 
 def view_friend_profile(request, user_id):
   try:
+    print(user_id)
     profile = Profile.objects.get(user=user_id)
+    print(profile.user)
     context = {'profile': profile}
     if profile:
         # profile_form = ProfileForm(instance=profile)
         comments = Comment.objects.filter(user=user_id)
         # context['profile_form']=profile_form
         context['comments']=comments
+        context['friend_profile']=profile
     return render(request, 'user/friends_profile.html', context)
   except Profile.DoesNotExist:
     return redirect('my_match')

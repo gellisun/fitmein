@@ -32,7 +32,7 @@
       <a class="nav-link" href="{% url 'match' %}"><i class="bi bi-person-hearts" id="top-nav-icon-2"></i>&nbsp;| Match-Me</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#"><i class="bi bi-heart-fill" id="top-nav-icon-3"></i>&nbsp;| Matches</a>
+      <a class="nav-link" href="{% url 'find_match' user.id%}"><i class="bi bi-heart-fill" id="top-nav-icon-3"></i>&nbsp;| Matches</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right" id="top-nav-icon-4"></i>&nbsp;| Log-Out</a>
@@ -60,7 +60,7 @@
           <div class="icon"><i class="bi bi-person-hearts"></i></div>
           <span>Match-Me</span>
         </div>
-      <a href="{% url 'match' %}">
+      <a href="{% url 'find_match' user.id%}">
         <div class="button">
           <div class="icon"><i class="bi bi-heart-fill"></i></div>
           <span>Matches</span>

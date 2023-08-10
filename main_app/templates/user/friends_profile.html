@@ -3,7 +3,7 @@
 {% load static %}
 
 <div class="card mb-3 signup-div">
-      <h1 >{{ user.username }}'s Profile Page</h1>
+      <h1 >{{ friend_profile.user }}'s Profile Page</h1>
       {% for photo in user.photo_set.all %}
       <img id="profile-img" class="responsive-img card-panel" src="{{ photo.url }}">
       {% empty %}
@@ -16,7 +16,7 @@
           <li class="list-group-item">If I could pick an activity I would pick {{ profile.favorites }}</li>
         </ul>
 
-<a href="{% url 'create_comment' %}" class="btn btn-warning mt-3">Add a comment for {{ user.username }}</a><br>
+<a href="{% url 'create_comment' %}" class="btn btn-warning mt-3">Add a comment for {{ friend_profile.user }}</a><br>
 <table class="comment_table">
   <thead>
     <tr>
