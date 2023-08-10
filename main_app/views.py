@@ -22,7 +22,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth.mixins import LoginRequiredMixin 
 
-
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 
 # ---------------- Home ----------------------------
 
@@ -74,7 +75,7 @@ def signup(request):
 class ProfileCreate(CreateView):
   model = Profile
   template_name = 'user/create_profile.html'
-  fields = ['age', 'gender', 'location', 'is_couch_potato', 'favorites', 'latitude', 'longitude', 'is_active']
+  fields = ['age', 'gender', 'location', 'is_couch_potato', 'favorites']
   success_url = reverse_lazy('profile')  # Replace 'profile-detail' with your actual URL pattern
 
   def form_valid(self, form):
@@ -91,7 +92,7 @@ class ActivityUpdate(UpdateView):
   model = Profile
   template_name = 'user/update_activity.html'
   fields = ['is_couch_potato', 'chosen_activities']
-  success_url = reverse_lazy('match')
+  success_url = reverse_lazy('update_activity')
 
   def form_valid(self, form):
       print('form_valid being executed')
@@ -99,13 +100,18 @@ class ActivityUpdate(UpdateView):
       return super().form_valid(form)
   
   def get_success_url(self):
-        return reverse('match')
+        return reverse('update_activity')
 
 
 # Load The Matching Page
 @login_required
 def match(request):
-  # Using HTML 5 Geolocation
+  print(request.user.id)
+  ip = requests.get('https://api.ipify.org?format=json')
+  ip_data = json.loads(ip.text)
+  res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
+  location_data_one = res.text #convert JSON to python dictionary
+  location_data = json.loads(location_data_one) #loading location data one
   if request.method == 'POST':
     try:
       data = json.loads(request.body)
@@ -122,22 +128,7 @@ def match(request):
   else:     
     profile = Profile.objects.get(user=request.user)
     return render(request, 'user/match.html', {'profile': profile})
-
-
-class ActivityUpdate(UpdateView):
-  model = Profile
-  template_name = 'user/update_activity.html'
-  fields = ['is_couch_potato', 'chosen_activities']
-  success_url = reverse_lazy('match')
-
-  def form_valid(self, form):
-      print('form_valid being executed')
-      form.instance.user = self.request.user
-      return super().form_valid(form)
   
-  def get_success_url(self):
-        return reverse('match')
-
 
 #Formula for the Haversine Distance
 def haversine(lat1, lon1, lat2, lon2):
@@ -179,7 +170,7 @@ def find_match(request, profile):
 class ProfileUpdate(UpdateView):
   model = Profile
   template_name = 'user/update_profile.html'
-  fields = ['gender', 'age', 'location', 'favorites', 'is_active']
+  fields = ['gender', 'age', 'location', 'favorites']
 
   success_url = reverse_lazy('profile')
 
@@ -190,7 +181,6 @@ class ProfileUpdate(UpdateView):
   
   def get_success_url(self):
         return reverse('profile')
-
 
 # ---------------Comment Section --------------------
 

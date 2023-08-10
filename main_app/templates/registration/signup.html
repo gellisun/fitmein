@@ -21,7 +21,7 @@
     />
   </head>
 
-  <body id="signup-body">
+  <body>
     <header style="position: sticky; top: 0; color: var(--bs-body-bg)">
       <h1 style="text-align: center; position: static" id="app-name">
         FitMeIn
@@ -29,13 +29,15 @@
       <br />
     </header>
     <div class="card border-warning mb-3 signup-div">
-      <div class="card-header"><h1>Sign Up</h1></div>
-      <div class="card-body">
-        <p class="red-text">{{ error_message }}</p>
-        <form method="POST" action="{% url 'signup' %}">
-          {% csrf_token %} {{ form.as_p }}
-          <input type="submit" class="btn btn-warning mt-3" value="Sign Up" />
-        </form>
+      <h1>Sign Up</h1>
+      <div class="card">
+        <div class="card-body">
+          <p class="red-text">{{ error_message }}</p>
+          <form method="POST" action="{% url 'signup' %}">
+            {% csrf_token %} {{ form.as_p }}
+            <input type="submit" class="btn btn-warning mt-3" value="Sign Up" />
+          </form>
+        </div>
       </div>
     </div>
   </body>
