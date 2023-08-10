@@ -1,5 +1,6 @@
-{% extends 'base.html' %} {% load static %}
-<script src="{% static 'script.js' %}"></script>
+{% extends 'base.html' %} 
+{% load static %}
+
 
 {% block content %}
 <header style="position: sticky; top: 0; color: var(--bs-body-bg)">
@@ -8,22 +9,7 @@
 </header>
 <a href="{% url 'update_activity' pk=profile.pk %}">Update your preferences and availability!</a>
 
-<!-- <ul>
-    <div>
-        <h3>3rd party API:CHeck your location</h3>
-        <p>Data Query: {{data.query}}</p>
-        <ul>
-            <li>Country: {{ data.country}}</li>
-            <li>Country Code: {{ data.countryCode }}</li>
-            <li>Time Zone: {{ data.timezone }}</li>
-            <li>City: {{ data.city }}</li>
-            <li>Zip Code: {{ data.zip }}</li>
-            <li>Latitude: {{ data.lat }}</li>
-            <li>Longitude: {{ data.lon }}</li>
-            <li>IP: {{ ip }}</li>
-        </ul>
-        <p>{{data}}</p> -->
-<!-- Geolocation API -->
+
         <h2>Using HTML API</h2>
 
         <h1>Match Page</h1>
@@ -34,9 +20,22 @@
         </form>
 
 <!-- Display Matches Table -->
-{% with info=data %}
-{% include './table.html' %}
-{% endwith %}
+<h1>TABLE INCLUDED</h1>
+<table id="profile-table">
+    <thead>
+        <tr>
+            <th>Distance</th>
+        </tr>
+    </thead>
+    {% for distance in matched_distance %}
+    <tr>
+        <td>{{ distance }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+
 
     </div>
 </ul>

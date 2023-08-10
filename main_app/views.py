@@ -9,6 +9,7 @@ import os
 import boto3
 import math
 
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView
 
@@ -104,31 +105,22 @@ class ActivityUpdate(UpdateView):
 
 # Load The Matching Page
 @login_required
-def match(request):
-  # Using HTML 5 Geolocation
-  if request.method == 'POST':
-    try:
-      data = json.loads(request.body)
-      latitude = data.get('latitude')
-      longitude = data.get('longitude')
-      profile = Profile.objects.get(user=request.user)
-      profile.latitude = float(latitude)
-      profile.longitude = float(longitude)
-      profile.save()
-      print(profile.id)
-      find_match(request, profile)
-    except json.JSONDecodeError:
-       return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-  else:     
+# @csrf_exempt
+def my_match(request, latitude, longitude):
     profile = Profile.objects.get(user=request.user)
-    return render(request, 'user/match.html', {'profile': profile})
+    profile.latitude = float(latitude)
+    profile.longitude = float(longitude)
+    profile.save()
+    print(profile.id)
+    return redirect (f'/find/{ profile.id }/')
+    # find_match(request, profile.id)
 
 
 class ActivityUpdate(UpdateView):
   model = Profile
   template_name = 'user/update_activity.html'
   fields = ['is_couch_potato', 'chosen_activities']
-  success_url = reverse_lazy('match')
+  success_url = reverse_lazy('update_activity')
 
   def form_valid(self, form):
       print('form_valid being executed')
@@ -151,28 +143,31 @@ def haversine(lat1, lon1, lat2, lon2):
 
 # Retrieve User latitude and longitude info and Database info and check haversine distance for a 
 # certain criteria (is_active, chosen_activities, maximum distance from user)
-def find_match(request, profile):
+def find_match(request, profile_id):
   print('find_match')
+  profile = Profile.objects.get(id=profile_id)
   print(profile.latitude)
-  user_profile = profile
   user_latitude = profile.latitude
   user_longitude = profile.longitude
-  user_chosen_activities = profile.chosen_activities #needs to be a comma-separated list
-  print(profile.chosen_activities)
+  user_chosen_activities = profile.favorites #needs to be a comma-separated list
+  print(user_chosen_activities)
   # Filter profiles
-  active_profiles = Profile.objects.filter(is_active=True, chosen_activities__in=user_chosen_activities).exclude(id=profile.id)
+  print(profile.id)
+  active_profiles = Profile.objects.filter(is_active=True, favorites__contains=user_chosen_activities).exclude(id=profile.id)
   print(active_profiles)
   matched_profiles = []
   matched_distance = [] 
   #Check if haversine distance is within a range (5.0km)
   for profile in active_profiles:
-    distance = profile.haversine(user_latitude, user_longitude)  
-    if distance < 5.0:
-      profile['distance']=distance #add a temporary field to my database named 'distance'. Needs testing
+    distance = haversine(user_latitude, user_longitude, profile.latitude, profile.longitude)  
+    print(distance)
+    if distance < 1500.0:
+      # profile['distance']=distance #add a temporary field to my database named 'distance'. Needs testing
       matched_profiles.append(profile)
-      # matched_distance.append(distance)
-      coordinates = {'user_latitude':user_latitude, 'user_longitude':user_longitude}
-  return render(request, 'user/match.html', {'matched_profiles':matched_profiles, 'matched_distance':matched_distance, 'coordinates':coordinates})
+      matched_distance.append(distance)
+  print(matched_profiles)
+  print(matched_distance)
+  return render(request, 'user/my_matches.html', {'profile':profile, 'matched_profiles':matched_profiles, 'matched_distance':matched_distance, 'user_latitude':user_latitude, 'user_longitude':user_longitude})
 
 
 # ---------------- Update Profile ------------------------

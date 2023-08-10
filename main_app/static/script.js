@@ -1,12 +1,12 @@
 
-
 const displayCoord = document.getElementById("displayCoord")
 const latitudeDisplay = document.getElementById("latitude")
 const longitudeDisplay = document.getElementById("longitude")
 
 displayCoord.addEventListener("click", getLocation)
 
-function getLocation() {
+function getLocation(event) {
+    event.preventDefault()
     console.log('click')
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(success, error);
@@ -23,7 +23,8 @@ function success(position) {
     // latitudeDisplay.innerHTML = latitude
     // longitudeDisplay.innerHTML = longitude
 
-    sendToServer(latitude, longitude)
+    window.location.assign(`http://localhost:8000/my_match/${latitude}/${longitude}/`)
+    // sendToServer(latitude, longitude)
 }
 
 function error() {
@@ -36,11 +37,12 @@ function getCsrf(csrf) {
     const cookieValue = document.cookie.match('(^|;)\\s*' + csrf + '\\s*=\\s*([^;]+)');
     return cookieValue ? cookieValue.pop() : '';
 }
+console.log(getCsrf('csrftoken'))
 
 function sendToServer(latitude, longitude){
     const data = { 'latitude': latitude, 'longitude': longitude };
     
-    fetch('/match/', {
+    fetch('/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -48,8 +50,7 @@ function sendToServer(latitude, longitude){
         },
         body: JSON.stringify(data),
     })
-    console.log('checkpoint 1')
-        .then(response => {
+        .then((response) => {
             if (response.ok) {
                 console.log('Location data sent successfully.');
             } else {

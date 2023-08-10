@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,800&display=swap" rel="stylesheet">
-
+    <script defer src="{% static 'script.js' %}"></script>
   </head>
   <body>
     <header
@@ -48,7 +48,7 @@
             <span>Profile</span>
           </div>
       </a>
-      <a href="{% url 'match' %}">
+      <a href="{% url 'update_activity' pk=profile.pk %}">
         <div class="button">
           <div class="icon"><i class="bi bi-heart-fill"></i></div>
           <span>Matches</span>

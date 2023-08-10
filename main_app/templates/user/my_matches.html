@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Active Filters</h1>
+
+<table id="profile-table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Gender</th>
+            <th>Matching Activities</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for matched_profile in matched_profiles %}
+        <tr>
+            <td>{{ matched_profile.user }}</td>
+            <td>{{ matched_profile.gender }}</td>
+            <td>{{ matched_profile.chosen_activities }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
