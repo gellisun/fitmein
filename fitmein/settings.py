@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'fitmein.wsgi.application'
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'fitmein',
+    'NAME': 'fitmein_heroku',
     'USER': os.environ['USER_NAME'],
     'PASSWORD': os.environ['DB_PASSWORD'],
     'HOST': os.environ['HOST'],
