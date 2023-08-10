@@ -21,7 +21,7 @@ function success(position) {
     console.log('success')
     console.log(latitude)
 
-    window.location.assign(`https://fit-me-in-7fcf0f4ba962.herokuapp.com/match/${latitude}/${longitude}/`)
+    window.location.assign(`https://fit-me-in-7fcf0f4ba962.herokuapp.com/my_match/${latitude}/${longitude}/`)
 
 }
 
