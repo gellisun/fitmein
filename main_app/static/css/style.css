@@ -277,6 +277,7 @@ nav{
 .comment_table th {
   background-color: #a478f5;
   color: white;
+  border-radius: 12px;
 }
 
 .edit_link, .delete_link, .back_link{
