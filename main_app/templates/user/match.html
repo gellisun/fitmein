@@ -7,8 +7,8 @@
   <h1 style="text-align: center; position: static" id="app-name">FitMeIn</h1>
   <br />
 </header>
-<h3>Step One: Select your activities</h3>
-<a href="{% url 'update_profile' pk=profile.pk %}" class="btn btn-warning mt-3">Submit</a>
+
+<h3><a href="{% url 'update_activity' pk=profile.pk %}" class="btn btn-warning mt-3">Step One: Select your activities here!</a></h3>
 
 <h3>2. Find a match!</h3>
 <form id="locationForm">

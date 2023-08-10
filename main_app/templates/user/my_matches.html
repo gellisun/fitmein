@@ -3,20 +3,39 @@
 {% block content %}
 <h1>Active Filters</h1>
 
+{{ matched_profiles }}
+
 <table id="profile-table">
     <thead>
         <tr>
             <th>User</th>
             <th>Gender</th>
+            <th>Age</th>
             <th>Matching Activities</th>
+            <th>Link</th>
         </tr>
     </thead>
     <tbody>
         {% for matched_profile in matched_profiles %}
         <tr>
             <td>{{ matched_profile.user }}</td>
-            <td>{{ matched_profile.gender }}</td>
-            <td>{{ matched_profile.chosen_activities }}</td>
+            <td>{{ matched_profile.get_gender_display }}</td>
+            <td>{{ matched_profile.age }}</td>
+            <td>{{ matched_profile.get_chosen_activities_display }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<table>
+    <thead>
+        <tr>
+            <th>Distance</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dist in matched_distance %}
+        <tr>
+            <td>{{ dist }} km</td>
         </tr>
         {% endfor %}
     </tbody>

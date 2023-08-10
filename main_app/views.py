@@ -37,19 +37,6 @@ def about(request):
   return render(request, 'about.html')
 
 
-@login_required
-def profile(request):
-  try:
-    profile = Profile.objects.get(user=request.user)
-    context = {'profile': profile}
-    if profile:
-        profile_form = ProfileForm(instance=profile)
-        comments = Comment.objects.filter(user=request.user)
-        context['profile_form']=profile_form
-        context['comments']=comments
-    return render(request, 'user/profile.html', context)
-  except Profile.DoesNotExist:
-    return redirect('create_profile')
 
 
 # ---------------- Sign-Up ------------------------
@@ -69,6 +56,19 @@ def signup(request):
   context = {'form': form, 'error_message': error_message}
   return render(request, 'registration/signup.html', context)
 
+@login_required
+def profile(request):
+  try:
+    profile = Profile.objects.get(user=request.user)
+    context = {'profile': profile}
+    if profile:
+        profile_form = ProfileForm(instance=profile)
+        comments = Comment.objects.filter(user=request.user)
+        context['profile_form']=profile_form
+        context['comments']=comments
+    return render(request, 'user/profile.html', context)
+  except Profile.DoesNotExist:
+    return redirect('create_profile')
 
 #-------------Create Profile----------------
 
@@ -82,18 +82,20 @@ class ProfileCreate(CreateView):
   def form_valid(self, form):
       print('form_valid being executed')
       form.instance.user = self.request.user
-      print(form)
       return super().form_valid(form)
 
 
 # -------------------- Matching Functions -------------------------------
 
+def match(request):
+   profile = Profile.objects.get(user=request.user)
+   return render(request, 'user/match.html', {'profile':profile})
 
 class ActivityUpdate(UpdateView):
   model = Profile
   template_name = 'user/update_activity.html'
   fields = ['is_couch_potato', 'chosen_activities']
-  success_url = reverse_lazy('update_activity')
+  success_url = reverse_lazy('match')
 
   def form_valid(self, form):
       print('form_valid being executed')
@@ -101,12 +103,11 @@ class ActivityUpdate(UpdateView):
       return super().form_valid(form)
   
   def get_success_url(self):
-        return reverse('update_activity')
+        return reverse('match')
 
 
 # Load The Matching Page
 @login_required
-# @csrf_exempt
 def my_match(request, latitude, longitude):
     profile = Profile.objects.get(user=request.user)
     profile.latitude = float(latitude)
@@ -116,20 +117,6 @@ def my_match(request, latitude, longitude):
     return redirect (f'/find/{ profile.id }/')
     # find_match(request, profile.id)
 
-
-class ActivityUpdate(UpdateView):
-  model = Profile
-  template_name = 'user/update_activity.html'
-  fields = ['is_couch_potato', 'chosen_activities']
-  success_url = reverse_lazy('update_activity')
-
-  def form_valid(self, form):
-      print('form_valid being executed')
-      form.instance.user = self.request.user
-      return super().form_valid(form)
-  
-
-#Formula for the Haversine Distance
 def haversine(lat1, lon1, lat2, lon2):
   R = 6371
   dist_lat = math.radians(lat2 - lat1)
@@ -139,33 +126,29 @@ def haversine(lat1, lon1, lat2, lon2):
   distance = R*c
   return distance
 
-# Retrieve User latitude and longitude info and Database info and check haversine distance for a 
-# certain criteria (is_active, chosen_activities, maximum distance from user)
 def find_match(request, profile_id):
-  print('find_match')
   profile = Profile.objects.get(id=profile_id)
-  print(profile.latitude)
   user_latitude = profile.latitude
   user_longitude = profile.longitude
-  user_chosen_activities = profile.favorites #needs to be a comma-separated list
-  print(user_chosen_activities)
-  # Filter profiles
-  print(profile.id)
-  active_profiles = Profile.objects.filter(is_active=True, favorites__contains=user_chosen_activities).exclude(id=profile.id)
-  print(active_profiles)
+  user_chosen_activities = profile.chosen_activities
+  active_profiles = Profile.objects.filter(is_couch_potato=True, chosen_activities__contains=user_chosen_activities).exclude(id=profile.id)
   matched_profiles = []
   matched_distance = [] 
   #Check if haversine distance is within a range (5.0km)
   for profile in active_profiles:
     distance = haversine(user_latitude, user_longitude, profile.latitude, profile.longitude)  
-    print(distance)
-    if distance < 1500.0:
-      # profile['distance']=distance #add a temporary field to my database named 'distance'. Needs testing
+    if distance < 8000.0:
       matched_profiles.append(profile)
       matched_distance.append(distance)
   print(matched_profiles)
   print(matched_distance)
-  return render(request, 'user/my_matches.html', {'profile':profile, 'matched_profiles':matched_profiles, 'matched_distance':matched_distance, 'user_latitude':user_latitude, 'user_longitude':user_longitude})
+  return render(request, 'user/my_matches.html', {
+     'profile':profile, 
+     'matched_profiles':matched_profiles, 
+     'matched_distance':matched_distance, 
+     'user_latitude':user_latitude, 
+     'user_longitude':user_longitude, 
+     })
 
 
 # ---------------- Update Profile ------------------------

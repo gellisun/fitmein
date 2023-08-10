@@ -47,7 +47,7 @@ Meet the team: [Myself](https://github.com/gellisun) | [Hannah Curran](https://g
 ## Code Process
 The biggest challenge regarding the various functionalities was surely understanding how to make a 1:1 relationship work. Also, we are committed to solve the issue we didn't have time to solve while trying to add an in-place-edit functionality with JavaScript.
 
-```JavaScript
+```Python
 @login_required
 def profile(request):
   try:
@@ -96,6 +96,7 @@ class ProfileCreate(CreateView):
       print(form)
       return super().form_valid(form)
 ```
+Amongst one of the features is the API call: our progam matches two or more users using their GPS/IP location by means of the HTLM5 Geolocation API.  When first prompted, the user provides data on which activities he would like to perform and this information is stored in his profile.  The program then makes a JavaScript call to the API that takes the user's 'latitude' and 'longitude', it then passes on those values through an URL to the back-end which are then parsed and stored in the database.  Finally, a filter is applied to every active profile in the database that has selected similar activities to that of the user, and calculates the distance between these profiles and the user, returning a table of profiles within a certain range that have the same activity interests as our user.
 
 ## Challenges
 The most time consuming challenge we faced was pulling down from the main remote repo after major changes and functionalities were made. Also, as the functionalities we wanted to implement were different from we did during class and labs, that meant that we all had to go through a lot of documentation in order to implement them.
