@@ -8,7 +8,7 @@ import math
 
 GENDER = (('M', 'Male'),('F', 'Female'),('O', 'Other'))
 
-ACTIVITIES = (('RU','Running'),('WL', 'Weight Lifting'),('GC','Group Classes'),('BR', 'Bike Riding'),('TE','Tennis'),('SQ','Squash'),('WA','Walking'),('BA','Badminton'),('SW','Swimming'),('WA','Walking'),('HI','Hiking'), ('P', 'Pilates'), ('SU', 'Surfing'), ('SK', 'Skateboarding'))
+ACTIVITIES = (('RU','Running'),('WL', 'Weight Lifting'),('GC','Group Classes'),('BR', 'Bike Riding'),('TE','Tennis'),('SQ','Squash'),('BA','Badminton'),('SW','Swimming'),('WA','Walking'),('HI','Hiking'), ('P', 'Pilates'), ('SU', 'Surfing'), ('SK', 'Skateboarding'))
 
 def get_profile_image_filepath(self, filename):
     return f'profile_images/{self.pk}/{"profile_image.png"}'

@@ -2,60 +2,61 @@
 {% block content %}
 {% load static %}
 
-<h1 >{{ user.username }}'s Profile Page</h1>
+<div class="card mb-3 signup-div">
+      <h1 >{{ user.username }}'s Profile Page</h1>
+      {% for photo in user.photo_set.all %}
+      <img id="profile-img" class="responsive-img card-panel" src="{{ photo.url }}">
+      {% empty %}
+      <div class="card-panel center-align">No Photo Uploaded</div>
+        {% endfor %}
+        <form action="{% url 'plant' user.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
+          {% csrf_token %}
+          {% if user.photo_set.exists %}
+          <!-- if photo uploaded then no button to appear -->
+          {% else %}
+          <input type="file" name="photo_file">
+          <br><br>
+          <button type="submit" class="btn">Upload Photo</button>
+          {% endif %}
+        </form>
+        <ul class="list-group list-group-flush right-align">
+          <li class="list-group-item">I am {{ profile.age }}</li>
+          <li class="list-group-item">I live in {{ profile.location }}</li>
+          <li class="list-group-item">If I could pick an activity I would pick {{ profile.favorites }}</li>
+        </ul>
 
-{% for photo in user.photo_set.all %}
-      <img class="responsive-img card-panel profile_photo" src="{{photo.url}}">
-    {% empty %}
-      <div class="card-panel teal-text center-align">No Photo Uploaded</div>
-    {% endfor %}
-    <form action="{% url 'profile' user.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
-    
-      {% csrf_token %}
-      <input type="file" name="photo_file">
-      <br><br>
-      <button type="submit" class="btn">Upload Photo</button>
-      
-    </form>
-  </div>
-
-  <!-- remove 'no file chosen' -->
-  <style type="">
-    input[type='file'] {
-       color: transparent;
-    }
-</style>
-
-<div>
-    <form id="locationForm" method="post" action="{% url 'profile' %}">
-      {% csrf_token %}
-      <input type="hidden" name="latitude" id="latitudeInput">
-      <input type="hidden" name="longitude" id="longitudeInput">
-    </form>
+<a href="{% url 'update_profile' pk=profile.pk %}" class="btn btn-warning mt-3">Update Profile</a>
+<a href="{% url 'create_comment' %}" class="btn btn-warning mt-3">Add a comment for {{ user.username }}</a><br>
+<table class="comment_table">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Comments</th>
+      <th>Edit</th> 
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td></td>
+    </tr>
+    {% for comment in comments %}
+      <tr>
+        <td>{{ comment.user.username }}</td>
+        <td>{{ comment.content }}</td>
+        {% if request.user == comment.user %}
+        <td><a href="{% url 'edit_comment' comment.id %}" class="edit_link">Edit</a></td>
+        <td><a href="{% url 'delete_comment' comment.id %}" class="delete_link">Delete</a></td>
+        {% else %}
+        <td></td>
+        <td></td>
+        {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 </div>
-
-
-<form id="profile-form" method="post">
-  {% csrf_token %}
-  <div>
-    <ul>
-      <li>
-        <strong>Age: </strong> <span id="age">{{ profile.age }}</span>
-      </li>
-      <li>
-        <strong>Location: </strong><span id="location">{{ profile.location }}</span>
-      </li>
-      <li>
-      <strong>Favorite Activities: </strong> <span id="favorites">{{ profile.get_favorites_display }}</span>
-      </li>
-    </ul>
-
-  </div>
-</form>
-
-<a href="{% url 'update_profile' pk=profile.pk %}" class="btn btn-primary">Update Profile</a>
-
-
 
 <div>
   <form id="locationForm" method="post" action="{% url 'profile' %}">
@@ -64,69 +65,6 @@
     <input type="hidden" name="longitude" id="longitudeInput">
   </form>
 </div>
-
-<br><br>
-<td><a href="{% url 'create_comment' %}" class="btn btn-primary"> Add a comment for {{ user.username }}...</a></td>
-<br><br>
-<table class="comment_table">
-    <thead>
-      <tr>
-          <th>Username</th>
-          <th>Comments</th>
-          <th>Edit</th>
-          <th>Delete</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          
-          <td></td>
-          <td></td>
-      </tr>
-      {% for comment in comments %}
-          <tr>
-              <td>{{ comment.user.username }}</td>
-              <td>{{ comment.content }}</td>
-              <td><a href="{% url 'edit_comment' comment.id %}" class="edit_link">Edit</a></td>
-              <td><a href="{% url 'delete_comment' comment.id %}" class="delete_link">Delete</a></td>
-          </tr>
-      {% endfor %}
-  </tbody>
-</table>
-
-
-<nav
-      class="navbar navbar-expand-md fixed-bottom bg-body d-flex flex-grow-1 flex-fill justify-content-center align-items-center align-self-stretch flex-nowrap py-3 pt-0 my-0 pb-0 mx-0 px-0 ps-0"
-      style="background: grey"
-    >
-        <a href="{% url 'profile' %}">
-        <div class="wrapper">
-        <div class="button">
-            <div class="icon"><i class="bi bi-person-circle"></i></div>
-            <span>Profile</span>
-            </div>
-        </a>
-        <a href="{% url 'update_activity' pk=profile.pk %}">
-        <div class="button">
-            <div class="icon"><i class="bi bi-heart-fill"></i></div>
-            <span>Matches</span>
-            </div>
-        </a>
-        <a href="#">
-            <div class="button">
-                <div class="icon"><i class="bi bi-person-hearts"></i></div>
-                <span>Friends</span>
-            </div>
-        </a>
-        <a href="{% url 'logout' %}">
-            <div class="button">
-                <div class="icon"><i class="bi bi-box-arrow-right"></i></div>
-                <span>Log-Out</span>
-            </div>
-        </a>
-            </div>
-    </nav>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
-<script src="{% static 'user/profile_edit.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
 
 {% endblock %}

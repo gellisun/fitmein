@@ -1,5 +1,7 @@
 /* homepage */
 
+
+
 .navigation {
   margin: 0px;
   height: 42px;
@@ -17,10 +19,6 @@ a.button {
   color: black;
 }
 
-#home-page, body {
-  background: #13996F;
-}
-
 #team{
   margin: 10px;
 }
@@ -35,6 +33,7 @@ section.padding {
 
 #git-logo{
   font-size: 35px;
+  color: #13996F;
 }
 
 #top-nav-bar * {
@@ -46,13 +45,13 @@ section.padding {
   font-size: 22px;
 }
 #top-nav-icon-1 {
-  color: lightskyblue;
+  color: black;
 }
 #top-nav-icon-2 {
-  color: red;
+  color: black;
 }
 #top-nav-icon-3 {
-  color: red;
+  color: black;
 }
 #top-nav-icon-4 {
   color: black;
@@ -102,21 +101,9 @@ section.padding {
 
 /* login and signup page */
 
-#login-body, #signup-body {
-  background-color: #a478f5;
-}
-
 .signup-div {
   margin: 0 5rem 0 5rem;
 }
-
-
-/* profile page */
-.card-panel {
-  border-radius: 50%;
-  width: 10rem;
-}
-
 
 
 @media only screen and (min-width: 1281px) and (max-width: 2100px){
@@ -164,6 +151,10 @@ section.padding {
   .wrapper {
     display: none;
   }
+  #django-button{
+    display: flex;
+    flex-direction: row;
+  }
 }
 
 @media only screen and (max-width: 767px){
@@ -171,7 +162,7 @@ section.padding {
     top: 0px;
   }
   .carousel-caption h5{
-    font-size: 30px;
+    font-size: 2px;
   }
   .carousel-caption a {
     padding: 10px 15px;
@@ -190,6 +181,10 @@ section.padding {
   #top-nav-bar {
     display:none;
 }
+#login-input {
+  margin-top: 10px;
+}
+
 }
 
 footer{
@@ -258,7 +253,7 @@ nav{
 }
 
 .wrapper .button span {
-  font-size: 25px;
+  font-size: 23px;
   color: #f1fbff;
   font-weight: 500;
   line-height: 60px;
@@ -267,16 +262,9 @@ nav{
 
 /* profile and update_profile page */
 
-.profile_photo {
-  border-radius: 50%; 
-  width: 180px; 
-  height: 180px; 
-  object-fit: cover; 
-}
-
-.comment-table {
-  width: 100%;
-  border-collapse: collapse;
+.card-panel {
+  border-radius: 50%;
+  width: 10rem;
 }
 
 .comment_table th, .comment_table td {
@@ -289,13 +277,9 @@ nav{
 .comment_table th {
   background-color: #a478f5;
   color: white;
+  border-radius: 12px;
 }
 
-
-.btn, .btn-primary {
-  background-color: #a478f5;
-}
-
-.edit_link, .delete_link{
+.edit_link, .delete_link, .back_link{
   color:#a478f5
 }

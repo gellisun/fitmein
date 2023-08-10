@@ -7,37 +7,15 @@
   <h1 style="text-align: center; position: static" id="app-name">FitMeIn</h1>
   <br />
 </header>
-<a href="{% url 'update_activity' pk=profile.pk %}">Update your preferences and availability!</a>
+<h3>Step One: Select your activities</h3>
+<a href="{% url 'update_profile' pk=profile.pk %}" class="btn btn-warning mt-3">Submit</a>
 
+<h3>2. Find a match!</h3>
+<form id="locationForm">
+    <button id="displayCoord">Find me a match!</button>
+    <p><span id="latitude"></span></p>
+    <p><span id="longitude"></span></p>
+</form>
 
-        <h2>Using HTML API</h2>
-
-        <h1>Match Page</h1>
-        <form id="locationForm">
-            <button id="displayCoord">Get Location</button>
-            <p><span id="latitude"></span></p>
-            <p><span id="longitude"></span></p>
-        </form>
-
-<!-- Display Matches Table -->
-<h1>TABLE INCLUDED</h1>
-<table id="profile-table">
-    <thead>
-        <tr>
-            <th>Distance</th>
-        </tr>
-    </thead>
-    {% for distance in matched_distance %}
-    <tr>
-        <td>{{ distance }}</td>
-    </tr>
-    {% endfor %}
-
-</table>
-
-
-
-    </div>
-</ul>
 
 {% endblock %}

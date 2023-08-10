@@ -1,17 +1,115 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
+<a href="/profile" class="back_link">Go Back</a>
+<div class="card border-warning mb-3 signup-div">
+  <div class="card">
+    <div class="card-body">
+      <form action="{% url 'update_activity' pk=profile.pk %}" method="POST">
+        {% csrf_token %}
+        <label for="id_is_couch_potato">Ready to be matched?</label>
+        <input type="checkbox" name="is_couch_potato" id="id_is_couch_potato" checked>
 
-<h3>1. Select which activities you would like to do:</h3>
-<form action="{% url 'update_activity' pk=profile.pk %}" method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save">
-</form>
-<h3>2. Find a match!</h3>
-<form id="locationForm">
-    <button id="displayCoord">Find me a match!</button>
-    <p><span id="latitude"></span></p>
-    <p><span id="longitude"></span></p>
-</form>
+
+        </p>
+
+
+        <p>
+          <label>Choose the sports you would like to do today!</label>
+        <div id="id_chosen_activities">
+          <div>
+            <label for="id_chosen_activities_0"><input type="checkbox" name="chosen_activities" value="RU"
+                id="id_chosen_activities_0">
+              Running</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_1"><input type="checkbox" name="chosen_activities" value="WL"
+                id="id_chosen_activities_1">
+              Weight Lifting</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_2"><input type="checkbox" name="chosen_activities" value="GC"
+                id="id_chosen_activities_2">
+              Group Classes</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_3"><input type="checkbox" name="chosen_activities" value="BR"
+                id="id_chosen_activities_3">
+              Bike Riding</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_4"><input type="checkbox" name="chosen_activities" value="TE"
+                id="id_chosen_activities_4">
+              Tennis</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_5"><input type="checkbox" name="chosen_activities" value="SQ"
+                id="id_chosen_activities_5">
+              Squash</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_6"><input type="checkbox" name="chosen_activities" value="WA"
+                id="id_chosen_activities_6">
+              Walking</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_7"><input type="checkbox" name="chosen_activities" value="BA"
+                id="id_chosen_activities_7">
+              Badminton</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_8"><input type="checkbox" name="chosen_activities" value="SW"
+                id="id_chosen_activities_8">
+              Swimming</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_9"><input type="checkbox" name="chosen_activities" value="WA"
+                id="id_chosen_activities_9">
+              Walking</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_10"><input type="checkbox" name="chosen_activities" value="HI"
+                id="id_chosen_activities_10" checked>
+              Hiking</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_11"><input type="checkbox" name="chosen_activities" value="P"
+                id="id_chosen_activities_11">
+              Pilates</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_12"><input type="checkbox" name="chosen_activities" value="SU"
+                id="id_chosen_activities_12">
+              Surfing</label>
+
+          </div>
+          <div>
+            <label for="id_chosen_activities_13"><input type="checkbox" name="chosen_activities" value="SK"
+                id="id_chosen_activities_13">
+              Skateboarding</label>
+
+          </div>
+        </div>
+
+
+
+
+        </p>
+        <input type="submit" value="Save" class="btn btn-warning mt-3" />
+      </form>
+    </div>
+  </div>
+</div>
+
 
 {% endblock %}
