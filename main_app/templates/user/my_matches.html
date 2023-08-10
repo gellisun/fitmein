@@ -22,6 +22,7 @@
             <td>{{ matched_profile.get_gender_display }}</td>
             <td>{{ matched_profile.age }}</td>
             <td>{{ matched_profile.get_chosen_activities_display }}</td>
+            <td><a href="{% url 'view_friend_profile' matched_profile.user.id %}">Link</a></td>
         </tr>
         {% endfor %}
     </tbody>

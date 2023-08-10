@@ -150,7 +150,19 @@ def find_match(request, profile_id):
      'user_longitude':user_longitude, 
      })
 
-
+def view_friend_profile(request, user_id):
+  try:
+    profile = Profile.objects.get(user=user_id)
+    context = {'profile': profile}
+    if profile:
+        # profile_form = ProfileForm(instance=profile)
+        comments = Comment.objects.filter(user=user_id)
+        # context['profile_form']=profile_form
+        context['comments']=comments
+    return render(request, 'user/friends_profile.html', context)
+  except Profile.DoesNotExist:
+    return redirect('my_match')
+  
 # ---------------- Update Profile ------------------------
 class ProfileUpdate(UpdateView):
   model = Profile
