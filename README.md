@@ -1,9 +1,9 @@
 # Project 3 - FitMeIn
 ## Description
-<p>At week nine of the Software Engineering Immersive course at General Assembly, we were challenged to work in a team for this project. We were requested to architect, design and collaboratively build a full-stack web app using Python and Django.</p>
+At week nine of the Software Engineering Immersive course at General Assembly, we were challenged to work in a team for this project. We were requested to architect, design and collaboratively build a full-stack web app using Python and Django.
 
 ## Working Team
-Meet the team: [Myself](https://github.com/gellisun) [Hannah Curran](https://github.com/hannahcurran) [James Carter](https://github.com/JamesC215) [Lucas Neno](https://github.com/casneno)<br>
+Meet the team: [Myself](https://github.com/gellisun) | [Hannah Curran](https://github.com/hannahcurran) | [James Carter](https://github.com/JamesC215) | [Lucas Neno](https://github.com/casneno)<br>
 <p>There was a great synergy from the beginning, we went through the planning all together and decided that we wanted to build a social network for couch potatoes who need some motivation to exercise.
 </p>
 <p>During the planning we also decided that we would be working with a mix of pair/mob programming and solo programming depending on the needs and functionalities.</p>
@@ -39,10 +39,10 @@ Meet the team: [Myself](https://github.com/gellisun) [Hannah Curran](https://git
 
 ![Web](/main_app/static/images/README/web-wireframe.png "Wireframe for web")
 ### ERD
-![ERD](/main_app/static/images/READMEerd.png "ERD")
+![ERD](/main_app/static/images/README/erd.png "ERD")
 
 ## Code Process
-<p>The biggest challenge regarding the various functionalities was surely understanding how to make a 1:1 relationship work.</p>
+The biggest challenge regarding the various functionalities was surely understanding how to make a 1:1 relationship work. Also, we are committed to solve the issue we didn't have time to solve while trying to add an in-place-edit functionality with JavaScript.
 
 ```JavaScript
 @login_required
@@ -95,15 +95,14 @@ class ProfileCreate(CreateView):
 ```
 
 ## Challenges
-<p>The most time consuming challenge we faced was pulling down from the main remote repo after major changes and functionalities were made. Also, as the functionalities we wanted to implement were different from we did during class and labs, that meant that we all had to go through a lot of documentation in order to implement them.</p>
+The most time consuming challenge we faced was pulling down from the main remote repo after major changes and functionalities were made. Also, as the functionalities we wanted to implement were different from we did during class and labs, that meant that we all had to go through a lot of documentation in order to implement them.
 
 ## Wins
 
 ## Key Learnings
+We all can say we learnt a lot about Git and GitHub collaboration after all the hours we spent on it :laughing:.
 
 ## Future Improvements
-- We would like the app show all the connections made.
+- We would like the app show all the connections made and improve its social feature.
 - We would like it to also be a place where, based on the user's location, fitness events in the area can be suggested.
 - We would like to add the possiblity to also find recipes and eating habits and suggestions to improve the user's health.
-
-
