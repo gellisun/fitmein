@@ -6,39 +6,17 @@
   <h1 style="text-align: center; position: static" id="app-name">FitMeIn</h1>
   <br />
 </header>
-<a href="{% url 'update_activity' pk=profile.pk %}">Update your preferences and availability!</a>
+<h3>Step One: Select your activities</h3>
+<a href="{% url 'update_profile' pk=profile.pk %}" class="btn btn-warning mt-3">Submit</a>
 
-<!-- <ul>
-    <div>
-        <h3>3rd party API:CHeck your location</h3>
-        <p>Data Query: {{data.query}}</p>
-        <ul>
-            <li>Country: {{ data.country}}</li>
-            <li>Country Code: {{ data.countryCode }}</li>
-            <li>Time Zone: {{ data.timezone }}</li>
-            <li>City: {{ data.city }}</li>
-            <li>Zip Code: {{ data.zip }}</li>
-            <li>Latitude: {{ data.lat }}</li>
-            <li>Longitude: {{ data.lon }}</li>
-            <li>IP: {{ ip }}</li>
-        </ul>
-        <p>{{data}}</p> -->
-<!-- Geolocation API -->
-        <h2>Using HTML API</h2>
+<h3>Step Two: Select your location</h3>
+<form id="locationForm">
+    <button id="displayCoord">Select your Location</button>
+    <p><span id="latitude"></span></p>
+    <p><span id="longitude"></span></p>
+</form>
 
-        <h1>Match Page</h1>
-        <form id="locationForm">
-            <button id="displayCoord">Get Location</button>
-            <p><span id="latitude"></span></p>
-            <p><span id="longitude"></span></p>
-        </form>
+<h3>Step Three: Match-Me!!</h3>
 
-<!-- Display Matches Table -->
-{% with info=data %}
-{% include './table.html' %}
-{% endwith %}
-
-    </div>
-</ul>
 
 {% endblock %}

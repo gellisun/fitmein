@@ -1,13 +1,141 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Update Profile</h1>
-<br>
-<form action="{% url 'update_profile' pk=profile.pk %}" method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save">
 
-</form>
+<a href="/profile" class="back_link">Go Back</a>
+<div class="card border-warning mb-3 signup-div">
+    <div class="card">
+        <div class="card-body">
+            <h1>Update Profile</h1><br>
+            <form action="{% url 'update_profile' pk=profile.pk %}" method="POST">
+                {% csrf_token %}
+                <p>
+                    <label for="id_gender">Gender:</label>
+                    <select name="gender" required id="id_gender">
+                        <option value="">---------</option>
 
+                        <option value="M">Male</option>
+
+                        <option value="F" selected>Female</option>
+
+                        <option value="O">Other</option>
+
+                    </select>
+
+
+                </p>
+
+
+                <p>
+                    <label for="id_age">Age:</label>
+                    <input type="number" name="age" value="40" required id="id_age">
+
+
+                </p>
+
+
+                <p>
+                    <label for="id_location">Location:</label>
+                    <input type="text" name="location" value="Dubai" maxlength="50" required id="id_location">
+
+
+                </p>
+
+
+                <p>
+                    <label>Favorites activities:</label>
+                <div id="id_favorites">
+                    <div>
+                        <label for="id_favorites_0"><input type="checkbox" name="favorites" value="RU"
+                                id="id_favorites_0">
+                            Running</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_1"><input type="checkbox" name="favorites" value="WL"
+                                id="id_favorites_1">
+                            Weight Lifting</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_2"><input type="checkbox" name="favorites" value="GC"
+                                id="id_favorites_2">
+                            Group Classes</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_3"><input type="checkbox" name="favorites" value="BR"
+                                id="id_favorites_3">
+                            Bike Riding</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_4"><input type="checkbox" name="favorites" value="TE"
+                                id="id_favorites_4">
+                            Tennis</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_5"><input type="checkbox" name="favorites" value="SQ"
+                                id="id_favorites_5">
+                            Squash</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_6"><input type="checkbox" name="favorites" value="WA"
+                                id="id_favorites_6" checked>
+                            Walking</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_7"><input type="checkbox" name="favorites" value="BA"
+                                id="id_favorites_7">
+                            Badminton</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_8"><input type="checkbox" name="favorites" value="SW"
+                                id="id_favorites_8">
+                            Swimming</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_9"><input type="checkbox" name="favorites" value="WA"
+                                id="id_favorites_9" checked>
+                            Walking</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_10"><input type="checkbox" name="favorites" value="HI"
+                                id="id_favorites_10">
+                            Hiking</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_11"><input type="checkbox" name="favorites" value="P"
+                                id="id_favorites_11">
+                            Pilates</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_12"><input type="checkbox" name="favorites" value="SU"
+                                id="id_favorites_12">
+                            Surfing</label>
+
+                    </div>
+                    <div>
+                        <label for="id_favorites_13"><input type="checkbox" name="favorites" value="SK"
+                                id="id_favorites_13">
+                            Skateboarding</label>
+
+                    </div>
+                </div>
+                </p>
+
+
+                <input type="submit" value="Save" class="btn btn-warning mt-3">
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

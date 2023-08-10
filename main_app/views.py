@@ -25,8 +25,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 
-import math
-
 # ---------------- Home ----------------------------
 
 
@@ -77,7 +75,7 @@ def signup(request):
 class ProfileCreate(CreateView):
   model = Profile
   template_name = 'user/create_profile.html'
-  fields = ['age', 'gender', 'location', 'is_couch_potato', 'favorites', 'latitude', 'longitude', 'is_active']
+  fields = ['age', 'gender', 'location', 'is_couch_potato', 'favorites']
   success_url = reverse_lazy('profile')  # Replace 'profile-detail' with your actual URL pattern
 
   def form_valid(self, form):
@@ -94,7 +92,7 @@ class ActivityUpdate(UpdateView):
   model = Profile
   template_name = 'user/update_activity.html'
   fields = ['is_couch_potato', 'chosen_activities']
-  success_url = reverse_lazy('match')
+  success_url = reverse_lazy('update_activity')
 
   def form_valid(self, form):
       print('form_valid being executed')
@@ -102,7 +100,7 @@ class ActivityUpdate(UpdateView):
       return super().form_valid(form)
   
   def get_success_url(self):
-        return reverse('match')
+        return reverse('update_activity')
 
 
 # Load The Matching Page
@@ -168,7 +166,21 @@ def find_match(request, profile):
   return render(request, 'user/match.html', {'matched_profiles':matched_profiles, 'matched_distance':matched_distance, 'coordinates':coordinates})
 
 
+# ---------------- Update Profile ------------------------
+class ProfileUpdate(UpdateView):
+  model = Profile
+  template_name = 'user/update_profile.html'
+  fields = ['gender', 'age', 'location', 'favorites']
 
+  success_url = reverse_lazy('profile')
+
+  def form_valid(self, form):
+      print('form_valid being executed')
+      form.instance.user = self.request.user
+      return super().form_valid(form)
+  
+  def get_success_url(self):
+        return reverse('profile')
 
 # ---------------Comment Section --------------------
 

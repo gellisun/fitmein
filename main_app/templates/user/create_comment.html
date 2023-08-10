@@ -1,28 +1,32 @@
-
-
-
-
-{% extends 'base.html' %}
-{% block content %}
-
+{% extends 'base.html' %} {% block content %}
 
 <a href="/profile" class="back_link">Go Back</a>
+<div class="card border-warning mb-3 signup-div">
+  <div class="card">
+    <div class="card-body">
+      <h2>Leave a comment for {{ user.username }}...</h2>
+      <form action="{% url 'create_comment' %}" method="POST">
+        {% csrf_token %}
 
-<h2>Leave a comment for {{ user.username }}...</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-   <a href="/profile" class="save-btn"> <button type="submit" valie= "Save" class="comment-btn">Save</button></a>
-    
-   
-  
-
-
-</form>
-
-
-
+        <p>
+          <label for="id_content"></label>
+          <textarea
+            name="content"
+            cols="40"
+            rows="10"
+            maxlength="250"
+            required
+            id="id_content"
+          ></textarea>
+        </p>
+        <a href="/profile" class="save-btn">
+          <button type="submit" value="Save" class="btn btn-warning mt-3">
+            Save
+          </button></a
+        >
+      </form>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
-
-
