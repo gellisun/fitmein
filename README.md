@@ -5,14 +5,13 @@ At week nine of the Software Engineering Immersive course at General Assembly, w
 So here it is, our [FitMeIn](https://fitmeinapp-822d09443e50.herokuapp.com/) app!
 
 ## Working Team
-Meet the team: [Myself](https://github.com/gellisun) | [Hannah Curran](https://github.com/hannahcurran) | [James Carter](https://github.com/JamesC215) | [Lucas Neno](https://github.com/casneno)<br>
-<p>There was a great synergy from the beginning, we went through the planning all together and decided that we wanted to build a social network for couch potatoes who need some motivation to exercise.
-</p>
-<p>During the planning we also decided that we would be working with a mix of pair/mob programming and solo programming depending on the needs and functionalities.</p>
+Meet the team: [Myself](https://github.com/gellisun) | [Hannah Curran](https://github.com/hannahcurran) | [James Carter](https://github.com/JamesC215) | [Lucas Neno](https://github.com/casneno)
+
+There was a great synergy from the beginning, we went through the planning all together and decided that we wanted to build a social network for couch potatoes who need some motivation to exercise.
+
+During the planning we also decided that we would be working with a mix of pair/mob programming and solo programming depending on the needs and functionalities.
 
 ## Technology Used
-
-# Code & Collaboration
 
 <div align="left">
 	<code><img width="30" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/html-5.svg" alt="HTML" title="HTML"/></code>
@@ -161,11 +160,19 @@ def find_match(request, profile_id):
 The most time consuming challenge we faced was pulling down from the main remote repo after major changes and functionalities were made. Also, as the functionalities we wanted to implement were different from we did during class and labs, that meant that we all had to go through a lot of documentation in order to implement them.
 
 ## Wins
+Throughout our group project, we accomplished some important goals as a team. We implemented some great features and have a functioning app. We had good communication and benefited from pair and mob programming at times. Although there were challenges, we were able to pull through and created a supportive space. By working together and talking openly, we set up a solid start for a great social fitness app!
+
+To work as part of a team who all had a positive attitude throughout the whole group GitHub process, even though it was a big challenge to process the new workflow and successfully create an app through different means of collaboration.
 
 ## Key Learnings
 We all can say we learnt a lot about Git and GitHub collaboration after all the hours we spent on it :laughing:.
+
+We learned the significance of clear communication and division of tasks, which helped us stay organized and efficient. Additionally, tackling real-world challenges, such as integrating authentication, an API and balancing front-end aesthetics with back-end functionality, enhanced our technical skills in different ways.
+
+Using our base knowledge of Django/Python that we learned about in our classroom lessons, but also using documentation from the Internet to allow us to implement features that we have not learned about before.
 
 ## Future Improvements
 - We would like the app show all the connections made and improve its social feature.
 - We would like it to also be a place where, based on the user's location, fitness events in the area can be suggested.
 - We would like to add the possiblity to also find recipes and eating habits and suggestions to improve the user's health.
+- We finally but not lastly would like to improve its style and UI/UX.
