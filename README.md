@@ -35,19 +35,19 @@ Meet the team: [Myself](https://github.com/gellisun) | [Hannah Curran](https://g
 
 ## Planning
 
-# Brainstorming
+### Brainstorming
 ![Initial brainstorming on the project](/main_app/static/images/README/Brainstorming.png "Initial brainstorming on the project")
-# Wireframe
+### Wireframe
 ![Mobile](/main_app/static/images/README/mobile-wireframe.png "Wireframe for mobile")<br>
 
 ![Web](/main_app/static/images/README/web-wireframe.png "Wireframe for web")
-# ERD
+### ERD
 ![ERD](/main_app/static/images/README/erd.png "ERD")
 
 ## Code Process
-The biggest challenge regarding the various functionalities was surely understanding how to make a 1:1 relationship work. Also, we are committed to solve the issue we didn't have time to solve while trying to add an in-place-edit functionality with JavaScript.
+The biggest challenge regarding the various functionalities implemente with our Models was surely understanding how to make a 1:1 relationship work. Also, we are committed to solve the issue we didn't have time to solve while trying to add an in-place-edit functionality with JavaScript.
 
-```JavaScript
+```Python
 @login_required
 def profile(request):
   try:
@@ -95,6 +95,64 @@ class ProfileCreate(CreateView):
       form.instance.user = self.request.user
       print(form)
       return super().form_valid(form)
+```
+### API
+Amongst one of the features is the API call: our program matches two or more users using their GPS/IP location by means of the HTLM5 Geolocation API.  When first prompted, the user provides data on which activities he would like to perform and this information is stored in his profile.  The program then makes a JavaScript call to the API that takes the user's 'latitude' and 'longitude', it then passes on those values through an URL to the back-end which are then parsed and stored in the database.  Finally, a filter is applied to every active profile in the database that has selected similar activities to that of the user, and calculates the distance between these profiles and the user, returning a table of profiles within a certain range that have the same activity interests as our user.
+
+```JavaScript
+const displayCoord = document.getElementById("displayCoord")
+const latitudeDisplay = document.getElementById("latitude")
+const longitudeDisplay = document.getElementById("longitude")
+
+displayCoord.addEventListener("click", getLocation)
+
+function getLocation(event) {
+    event.preventDefault()
+    console.log('click')
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+        alert("Geolocation is not available in your browser.");
+    }
+}
+
+function success(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    console.log('success')
+    console.log(latitude)
+
+    window.location.assign(`http://localhost:8000/my_match/${latitude}/${longitude}/`)
+
+}
+```
+```Python
+def haversine(lat1, lon1, lat2, lon2):
+  R = 6371
+  dist_lat = math.radians(lat2 - lat1)
+  dist_lon = math.radians(lon2 - lon1)
+  a = math.sin(dist_lat / 2) * math.sin(dist_lat / 2) + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dist_lon / 2) * math.sin(dist_lon / 2)
+  c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+  distance = R*c
+  return distance
+
+def find_match(request, profile_id):
+  profile = Profile.objects.get(id=profile_id)
+  user_latitude = profile.latitude
+  user_longitude = profile.longitude
+  user_chosen_activities = profile.chosen_activities
+  active_profiles = Profile.objects.filter(is_active=True, chosen_activities__contains=user_chosen_activities).exclude(id=profile.id)
+  matched_profiles = []
+  matched_distance = [] 
+  #Check if haversine distance is within a range (5.0km)
+  for profile in active_profiles:
+    distance = haversine(user_latitude, user_longitude, profile.latitude, profile.longitude)  
+    if distance < 5000.0:
+      matched_profiles.append(profile)
+      matched_distance.append(distance)
+  print(matched_profiles)
+  print(matched_distance)
+  return render(request, 'user/my_matches.html', {'profile':profile, 'matched_profiles':matched_profiles, 'matched_distance':matched_distance, 'user_latitude':user_latitude, 'user_longitude':user_longitude})
 ```
 
 ## Challenges
