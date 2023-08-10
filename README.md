@@ -1,4 +1,4 @@
-### Project 3 - FitMeIn
+# Project 3 - FitMeIn
 ## Description
 <p>At week nine of the Software Engineering Immersive course at General Assembly, we were challenged to work in a team for this project. We were requested to architect, design and collaboratively build a full-stack web app using Python and Django.</p>
 
@@ -9,7 +9,7 @@ Meet the team: [Myself](https://github.com/gellisun) [Hannah Curran](https://git
 <p>During the planning we also decided that we would be working with a mix of pair/mob programming and solo programming depending on the needs and functionalities.</p>
 
 ## Technology Used
-# Code & Collaboration
+### Code & Collaboration
 <div align="left">
 	<code><img width="30" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/html-5.svg" alt="HTML" title="HTML"/></code>
 	<code><img width="30" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/css-3.svg" alt="CSS" title="CSS"/></code>
@@ -32,13 +32,13 @@ Meet the team: [Myself](https://github.com/gellisun) [Hannah Curran](https://git
 - Implement authorization by restricting access to the Creation, Updating & Deletion of data resources.
 
 ## Planning
-# Brainstorming
+### Brainstorming
 ![Initial brainstorming on the project](/main_app/static/images/README/Brainstorming.png "Initial brainstorming on the project")
-# Wireframe
+### Wireframe
 ![Mobile](/main_app/static/images/README/mobile-wireframe.png "Wireframe for mobile")<br>
 
 ![Web](/main_app/static/images/README/web-wireframe.png "Wireframe for web")
-# ERD
+### ERD
 ![ERD](/main_app/static/images/READMEerd.png "ERD")
 
 ## Code Process
