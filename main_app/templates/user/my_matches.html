@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Active Users:</h1>
+
+<div class="table-container">
+<table id="profile-table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Matching Activities</th>
+            <th>Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for matched_profile in matched_profiles %}
+        <tr>
+            <td>{{ matched_profile.user }}</td>
+            <td>{{ matched_profile.get_gender_display }}</td>
+            <td>{{ matched_profile.age }}</td>
+            <td>{{ matched_profile.get_chosen_activities_display }}</td>
+            <td><a href="{% url 'view_friend_profile' matched_profile.user.id %}">Link</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<table>
+    <thead>
+        <tr>
+            <th>Distance</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dist in matched_distance %}
+        <tr>
+            <td>{{ dist }} km</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

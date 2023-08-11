@@ -1,0 +1,60 @@
+{% extends 'base.html' %} 
+{% block content %}
+{% load static %}
+
+<div class="card mb-3 signup-div">
+      <h1 >{{ friend_profile.user }}'s Profile Page</h1>
+      {% for photo in user.photo_set.all %}
+      <img id="profile-img" class="responsive-img card-panel" src="{{ photo.url }}">
+      {% empty %}
+      <div class="card-panel center-align">No Photo Uploaded</div>
+        {% endfor %}
+        
+        <ul class="list-group list-group-flush right-align">
+          <li class="list-group-item">I am {{ profile.age }}</li>
+          <li class="list-group-item">I live in {{ profile.location }}</li>
+          <li class="list-group-item">If I could pick an activity I would pick {{ profile.favorites }}</li>
+        </ul>
+
+<a href="{% url 'create_comment' %}" class="btn btn-warning mt-3">Add a comment for {{ friend_profile.user }}</a><br>
+<table class="comment_table">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Comments</th>
+      <th>Edit</th> 
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td></td>
+    </tr>
+    {% for comment in comments %}
+      <tr>
+        <td>{{ comment.user.username }}</td>
+        <td>{{ comment.content }}</td>
+        {% if request.user == comment.user %}
+        <td><a href="{% url 'edit_comment' comment.id %}" class="edit_link">Edit</a></td>
+        <td><a href="{% url 'delete_comment' comment.id %}" class="delete_link">Delete</a></td>
+        {% else %}
+        <td></td>
+        <td></td>
+        {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<div>
+  <form id="locationForm" method="post" action="{% url 'profile' %}">
+    {% csrf_token %}
+    <input type="hidden" name="latitude" id="latitudeInput">
+    <input type="hidden" name="longitude" id="longitudeInput">
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
+
+{% endblock %}

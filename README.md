@@ -2,10 +2,10 @@
 ## Description
 At week nine of the Software Engineering Immersive course at General Assembly, we were challenged to work in a team for this project. We were requested to architect, design and collaboratively build a full-stack web app using Python and Django.
 
-So here it is, our [FitMeIn](https://fitmeinapp-822d09443e50.herokuapp.com/) app!
+So here it is, our [FitMeIn](https://fit-me-in-7fcf0f4ba962.herokuapp.com/) app!
 
 ## Working Team
-Meet the team: [Myself](https://github.com/gellisun) | [Hannah Curran](https://github.com/hannahcurran) | [James Carter](https://github.com/JamesC215) | [Lucas Neno](https://github.com/casneno)
+Meet the team: [Angelica Sandrini](https://github.com/gellisun) | [Hannah Curran](https://github.com/hannahcurran) | [James Carter](https://github.com/JamesC215) | [Lucas Neno](https://github.com/casneno)
 
 There was a great synergy from the beginning, we went through the planning all together and decided that we wanted to build a social network for couch potatoes who need some motivation to exercise.
 

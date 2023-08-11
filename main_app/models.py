@@ -28,7 +28,7 @@ class Profile(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
-        return self.user
+        return str(self.user)
 
     def get_absolute_url(self):
         return reverse('profile')

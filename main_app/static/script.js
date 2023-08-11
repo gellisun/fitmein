@@ -1,12 +1,12 @@
 
-
 const displayCoord = document.getElementById("displayCoord")
 const latitudeDisplay = document.getElementById("latitude")
 const longitudeDisplay = document.getElementById("longitude")
 
 displayCoord.addEventListener("click", getLocation)
 
-function getLocation() {
+function getLocation(event) {
+    event.preventDefault()
     console.log('click')
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(success, error);
@@ -20,43 +20,13 @@ function success(position) {
     const longitude = position.coords.longitude;
     console.log('success')
     console.log(latitude)
-    // latitudeDisplay.innerHTML = latitude
-    // longitudeDisplay.innerHTML = longitude
 
-    sendToServer(latitude, longitude)
+    window.location.assign(`https://fit-me-in-7fcf0f4ba962.herokuapp.com/my_match/${latitude}/${longitude}/`)
+    // window.location.assign(`http://localhost:8000/my_match/${latitude}/${longitude}/`)
+
 }
 
 function error() {
     console.log('error')
     alert("Unable to retrieve your location.");
-}
-
-// Function to get CSRF token from cookies
-function getCsrf(csrf) {
-    const cookieValue = document.cookie.match('(^|;)\\s*' + csrf + '\\s*=\\s*([^;]+)');
-    return cookieValue ? cookieValue.pop() : '';
-}
-
-function sendToServer(latitude, longitude){
-    const data = { 'latitude': latitude, 'longitude': longitude };
-    
-    fetch('/match/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCsrf('csrftoken'),
-        },
-        body: JSON.stringify(data),
-    })
-    console.log('checkpoint 1')
-        .then(response => {
-            if (response.ok) {
-                console.log('Location data sent successfully.');
-            } else {
-                console.error('Failed to send location data to server.');
-            }
-        })
-        .catch(error => {
-            console.error('Error sending location data:', error);
-        });
 }

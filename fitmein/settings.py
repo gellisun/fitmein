@@ -18,6 +18,9 @@ import os
 environ.Env()
 environ.Env.read_env()
 
+import django_on_heroku
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -87,7 +90,7 @@ WSGI_APPLICATION = 'fitmein.wsgi.application'
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'fitmein',
+    'NAME': 'fitmein_heroku',
     'USER': os.environ['USER_NAME'],
     'PASSWORD': os.environ['DB_PASSWORD'],
     'HOST': os.environ['HOST'],
@@ -95,6 +98,7 @@ DATABASES = {
   }
 }
 
+django_on_heroku.settings(locals(), databases=False)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -139,3 +143,4 @@ LOGOUT_REDIRECT_URL = '/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
