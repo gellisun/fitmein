@@ -9,6 +9,7 @@ import os
 import boto3
 import math
 
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView
 
@@ -36,19 +37,6 @@ def about(request):
   return render(request, 'about.html')
 
 
-@login_required
-def profile(request):
-  try:
-    profile = Profile.objects.get(user=request.user)
-    context = {'profile': profile}
-    if profile:
-        profile_form = ProfileForm(instance=profile)
-        comments = Comment.objects.filter(user=request.user)
-        context['profile_form']=profile_form
-        context['comments']=comments
-    return render(request, 'user/profile.html', context)
-  except Profile.DoesNotExist:
-    return redirect('create_profile')
 
 
 # ---------------- Sign-Up ------------------------
@@ -68,6 +56,19 @@ def signup(request):
   context = {'form': form, 'error_message': error_message}
   return render(request, 'registration/signup.html', context)
 
+@login_required
+def profile(request):
+  try:
+    profile = Profile.objects.get(user=request.user)
+    context = {'profile': profile}
+    if profile:
+        profile_form = ProfileForm(instance=profile)
+        comments = Comment.objects.filter(user=request.user)
+        context['profile_form']=profile_form
+        context['comments']=comments
+    return render(request, 'user/profile.html', context)
+  except Profile.DoesNotExist:
+    return redirect('create_profile')
 
 #-------------Create Profile----------------
 
@@ -81,18 +82,20 @@ class ProfileCreate(CreateView):
   def form_valid(self, form):
       print('form_valid being executed')
       form.instance.user = self.request.user
-      print(form)
       return super().form_valid(form)
 
 
 # -------------------- Matching Functions -------------------------------
 
+def match(request):
+   profile = Profile.objects.get(user=request.user)
+   return render(request, 'user/match.html', {'profile':profile})
 
 class ActivityUpdate(UpdateView):
   model = Profile
   template_name = 'user/update_activity.html'
   fields = ['is_couch_potato', 'chosen_activities']
-  success_url = reverse_lazy('update_activity')
+  success_url = reverse_lazy('match')
 
   def form_valid(self, form):
       print('form_valid being executed')
@@ -100,37 +103,20 @@ class ActivityUpdate(UpdateView):
       return super().form_valid(form)
   
   def get_success_url(self):
-        return reverse('update_activity')
+        return reverse('match')
 
 
 # Load The Matching Page
 @login_required
-def match(request):
-  print(request.user.id)
-  ip = requests.get('https://api.ipify.org?format=json')
-  ip_data = json.loads(ip.text)
-  res = requests.get('http://ip-api.com/json/'+ip_data["ip"]) #get a json
-  location_data_one = res.text #convert JSON to python dictionary
-  location_data = json.loads(location_data_one) #loading location data one
-  if request.method == 'POST':
-    try:
-      data = json.loads(request.body)
-      latitude = data.get('latitude')
-      longitude = data.get('longitude')
-      profile = Profile.objects.get(user=request.user)
-      profile.latitude = float(latitude)
-      profile.longitude = float(longitude)
-      profile.save()
-      print(profile.id)
-      find_match(request, profile)
-    except json.JSONDecodeError:
-       return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-  else:     
+def my_match(request, latitude, longitude):
     profile = Profile.objects.get(user=request.user)
-    return render(request, 'user/match.html', {'profile': profile})
-  
+    profile.latitude = float(latitude)
+    profile.longitude = float(longitude)
+    profile.save()
+    print(profile.id)
+    return redirect (f'/find/{ profile.id }/')
+    # find_match(request, profile.id)
 
-#Formula for the Haversine Distance
 def haversine(lat1, lon1, lat2, lon2):
   R = 6371
   dist_lat = math.radians(lat2 - lat1)
@@ -140,32 +126,46 @@ def haversine(lat1, lon1, lat2, lon2):
   distance = R*c
   return distance
 
-# Retrieve User latitude and longitude info and Database info and check haversine distance for a 
-# certain criteria (is_active, chosen_activities, maximum distance from user)
-def find_match(request, profile):
-  print('find_match')
-  print(profile.latitude)
-  user_profile = profile
+def find_match(request, profile_id):
+  profile = Profile.objects.get(id=profile_id)
   user_latitude = profile.latitude
   user_longitude = profile.longitude
-  user_chosen_activities = profile.chosen_activities #needs to be a comma-separated list
-  print(profile.chosen_activities)
-  # Filter profiles
-  active_profiles = Profile.objects.filter(is_active=True, chosen_activities__in=user_chosen_activities).exclude(id=profile.id)
-  print(active_profiles)
+  user_chosen_activities = profile.chosen_activities
+  active_profiles = Profile.objects.filter(is_couch_potato=True, chosen_activities__contains=user_chosen_activities).exclude(id=profile.id)
   matched_profiles = []
   matched_distance = [] 
   #Check if haversine distance is within a range (5.0km)
   for profile in active_profiles:
-    distance = profile.haversine(user_latitude, user_longitude)  
-    if distance < 5.0:
-      profile['distance']=distance #add a temporary field to my database named 'distance'. Needs testing
+    distance = round(haversine(user_latitude, user_longitude, profile.latitude, profile.longitude), 1)  
+    if distance < 8000.0:
       matched_profiles.append(profile)
-      # matched_distance.append(distance)
-      coordinates = {'user_latitude':user_latitude, 'user_longitude':user_longitude}
-  return render(request, 'user/match.html', {'matched_profiles':matched_profiles, 'matched_distance':matched_distance, 'coordinates':coordinates})
+      matched_distance.append(distance)
+  print(matched_profiles)
+  print(matched_distance)
+  return render(request, 'user/my_matches.html', {
+     'profile':profile, 
+     'matched_profiles':matched_profiles, 
+     'matched_distance':matched_distance, 
+     'user_latitude':user_latitude, 
+     'user_longitude':user_longitude, 
+     })
 
-
+def view_friend_profile(request, user_id):
+  try:
+    print(user_id)
+    profile = Profile.objects.get(user=user_id)
+    print(profile.user)
+    context = {'profile': profile}
+    if profile:
+        # profile_form = ProfileForm(instance=profile)
+        comments = Comment.objects.filter(user=user_id)
+        # context['profile_form']=profile_form
+        context['comments']=comments
+        context['friend_profile']=profile
+    return render(request, 'user/friends_profile.html', context)
+  except Profile.DoesNotExist:
+    return redirect('my_match')
+  
 # ---------------- Update Profile ------------------------
 class ProfileUpdate(UpdateView):
   model = Profile

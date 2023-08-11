@@ -11,11 +11,11 @@
                 <p>
                     <label for="id_gender">Gender:</label>
                     <select name="gender" required id="id_gender">
-                        <option value="">---------</option>
+                        <option value="" selected>----------</option>
 
                         <option value="M">Male</option>
 
-                        <option value="F" selected>Female</option>
+                        <option value="F">Female</option>
 
                         <option value="O">Other</option>
 
@@ -27,7 +27,7 @@
 
                 <p>
                     <label for="id_age">Age:</label>
-                    <input type="number" name="age" value="40" required id="id_age">
+                    <input type="number" name="age" value="{{ profile.age }}" required id="id_age">
 
 
                 </p>
@@ -35,7 +35,7 @@
 
                 <p>
                     <label for="id_location">Location:</label>
-                    <input type="text" name="location" value="Dubai" maxlength="50" required id="id_location">
+                    <input type="text" name="location" value="{{ profile.location }}" maxlength="50" required id="id_location">
 
 
                 </p>
