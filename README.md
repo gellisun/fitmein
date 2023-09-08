@@ -1,6 +1,6 @@
 # Project 3 - FitMeIn
 ## Description
-At week nine of the Software Engineering Immersive course at General Assembly, we were challenged to work in a team for this project. We were requested to architect, design and collaboratively build a full-stack web app using Python and Django.
+At week nine of the Software Engineering Immersive course at General Assembly, we were challenged to work for seven days as a team for this project. We were requested to architect, design and collaboratively build a full-stack web app using Python and Django.
 
 So here it is, our [FitMeIn](https://fitmein-social-3cd33888ee92.herokuapp.com/) app!
 
@@ -14,16 +14,16 @@ During the planning we also decided that we would be working with a mix of pair/
 ## Technology Used
 
 <div align="left">
-	<code><img width="30" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/html-5.svg" alt="HTML" title="HTML"/></code>
-	<code><img width="30" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/css-3.svg" alt="CSS" title="CSS"/></code>
-	<code><img width="40" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/bootstrap.svg" alt="Bootstrap" title="Bootstrap"/></code>
-	<code><img width="40" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/javascript.svg" alt="JavaScript" title="JavaScript"/></code>
-	<code><img width="40" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/python.svg" alt="Python" title="Python"/></code>
-  <code><img width="30" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/django.svg" alt="Django" title="Django"/></code>
+	<code>HTML<img width="30" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/html-5.svg" alt="HTML" title="HTML"/></code>
+	<code>CSS<img width="30" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/css-3.svg" alt="CSS" title="CSS"/></code>
+	<code>Bootstrap<img width="40" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/bootstrap.svg" alt="Bootstrap" title="Bootstrap"/></code>
+	<code>JavaScript<img width="40" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/javascript.svg" alt="JavaScript" title="JavaScript"/></code>
+	<code>Python<img width="40" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/python.svg" alt="Python" title="Python"/></code>
+  <code>Django<img width="30" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/django.svg" alt="Django" title="Django"/></code>
 </div><br>
 <div align="left">
-	<code><img width="80" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/git.svg" alt="Git" title="Git"/></code>
-	<code><img width="40" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/github-icon.svg" alt="GitHub" title="GitHub"/></code>
+	<code>Git<img width="80" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/git.svg" alt="Git" title="Git"/></code>
+	<code>GitHub<img width="40" src="https://raw.githubusercontent.com/tomchen/stack-icons/master/logos/github-icon.svg" alt="GitHub" title="GitHub"/></code>
 </div>
 
 ## Brief
@@ -46,7 +46,9 @@ During the planning we also decided that we would be working with a mix of pair/
 ![ERD](/main_app/static/images/README/erd.png "ERD")
 
 ## Code Process
-The biggest challenge regarding the various functionalities implemente with our Models was surely understanding how to make a 1:1 relationship work. Also, we are committed to solve the issue we didn't have time to solve while trying to add an in-place-edit functionality with JavaScript.
+
+I took care of the profile creation and the biggest challenge was at first to understand how to make a 1:1 relationship work.
+This and the CSS were the bits where I was most involved in.
 
 ```Python
 @login_required
@@ -98,7 +100,7 @@ class ProfileCreate(CreateView):
       return super().form_valid(form)
 ```
 ### API
-Amongst one of the features is the API call: our program matches two or more users using their GPS/IP location by means of the HTLM5 Geolocation API.  When first prompted, the user provides data on which activities he would like to perform and this information is stored in his profile.  The program then makes a JavaScript call to the API that takes the user's 'latitude' and 'longitude', it then passes on those values through an URL to the back-end which are then parsed and stored in the database.  Finally, a filter is applied to every active profile in the database that has selected similar activities to that of the user, and calculates the distance between these profiles and the user, returning a table of profiles within a certain range that have the same activity interests as our user.
+Amongst one of the features is the API call of which Lucas was in charge: our program matches two or more users using their GPS/IP location by means of the HTLM5 Geolocation API.  When first prompted, the user provides data on which activities he would like to perform and this information is stored in his profile.  The program then makes a JavaScript call to the API that takes the user's 'latitude' and 'longitude', it then passes on those values through an URL to the back-end which are then parsed and stored in the database.  Finally, a filter is applied to every active profile in the database that has selected similar activities to that of the user, and calculates the distance between these profiles and the user, returning a table of profiles within a certain range that have the same activity interests as our user.
 
 ```JavaScript
 const displayCoord = document.getElementById("displayCoord")
@@ -157,21 +159,21 @@ def find_match(request, profile_id):
 ```
 
 ## Challenges
-The most time consuming challenge we faced was pulling down from the main remote repo after major changes and functionalities were made. Also, as the functionalities we wanted to implement were different from we did during class and labs, that meant that we all had to go through a lot of documentation in order to implement them.
+My main challenge and biggest failure was the fact that I tried hard but didn't manage to add an in-place-edit functionality with JavaScript.
+The most time consuming challenge we faced as a team was pulling down from the main remote repo after major changes and functionalities were made. Also, as the functionalities we wanted to implement were different from what we did during class and labs, that meant that we all had to go through a lot of documentation in order to implement them, causing us to use a lot of our time studying.
 
 ## Wins
-Throughout our group project, we accomplished some important goals as a team. We implemented some great features and have a functioning app. We had good communication and benefited from pair and mob programming at times. Although there were challenges, we were able to pull through and created a supportive space. By working together and talking openly, we set up a solid start for a great social fitness app!
+Throughout our group project, we accomplished some important goals as a team. We implemented a few features and have a functioning app. Although there were challenges, we were able to pull through and created a supportive space. By working together and talking openly, we set up a solid start for a great social fitness app!
 
-To work as part of a team who all had a positive attitude throughout the whole group GitHub process, even though it was a big challenge to process the new workflow and successfully create an app through different means of collaboration.
+To work as part of a team who all had a positive attitude despite the challenges.
 
 ## Key Learnings
 We all can say we learnt a lot about Git and GitHub collaboration after all the hours we spent on it :laughing:.
-
-We learned the significance of clear communication and division of tasks, which helped us stay organized and efficient. Additionally, tackling real-world challenges, such as integrating authentication, an API and balancing front-end aesthetics with back-end functionality, enhanced our technical skills in different ways.
-
+I personaly learned the significance of clear communication and division of tasks, that could help us stay organized and efficient. Additionally, tackling real-world challenges, such as integrating authentication, an API and balancing front-end aesthetics with back-end functionality, enhanced our technical skills in different ways.
 Using our base knowledge of Django/Python that we learned about in our classroom lessons, but also using documentation from the Internet to allow us to implement features that we have not learned about before.
 
 ## Future Improvements
+- At the moment there’s a bug with the photo upload (it uploads to all users and once uploaded cannot be changed) and the comments are not linked to the profile for which they are added.
 - We would like the app show all the connections made and improve its social feature.
 - We would like it to also be a place where, based on the user's location, fitness events in the area can be suggested.
 - We would like to add the possiblity to also find recipes and eating habits and suggestions to improve the user's health.
